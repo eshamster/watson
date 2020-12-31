@@ -1,4 +1,4 @@
-(defpackage :watson/import
+(defpackage :watson/define/import
   (:use #:cl)
   (:export #:defimport.wat)
   (:import-from #:watson/environment
@@ -17,7 +17,7 @@
                 #:parse-mod-nm)
   (:import-from #:cl-ppcre
                 #:split))
-(in-package :watson/import)
+(in-package :watson/define/import)
 
 ;; https://webassembly.github.io/spec/core/text/modules.html#imports
 

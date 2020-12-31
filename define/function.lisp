@@ -1,4 +1,4 @@
-(defpackage :watson/defun
+(defpackage :watson/define/function
   (:use #:cl
         #:watson/reserved-word)
   (:export #:defun.wat)
@@ -16,7 +16,7 @@
                 #:parse-arg-name)
   (:import-from #:alexandria
                 #:symbolicate))
-(in-package :watson/defun)
+(in-package :watson/define/function)
 
 (defmacro defun.wat (name args result &body body)
   `(progn (setf (wsymbol-function (intern.wat ',name))

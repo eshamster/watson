@@ -4,7 +4,7 @@
   (:import-from #:watson/environment
                 #:wenv-import-body-generators
                 #:wenv-function-body-generators)
-  (:import-from #:watson/export
+  (:import-from #:watson/define/export
                 #:get-export-body-generators)
   (:import-from #:watson/reserved-word
                 #:|module|)

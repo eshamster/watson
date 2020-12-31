@@ -1,4 +1,4 @@
-(defpackage :watson/defmacro
+(defpackage :watson/define/macro
   (:use #:cl)
   (:export #:defmacro.wat
            #:macroexpand-1.wat
@@ -11,7 +11,7 @@
                 #:wenv-macro-function-symbols
                 #:intern.wat
                 #:*global-wat-env*))
-(in-package :watson/defmacro)
+(in-package :watson/define/macro)
 
 ;; TODO: distinguish between default macros and user defined macros
 

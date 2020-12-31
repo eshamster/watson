@@ -1,10 +1,10 @@
 (defpackage :watson/main
   (:use #:watson/built-in-func
-        #:watson/defglobal
-        #:watson/defmacro
-        #:watson/defun
-        #:watson/export
-        #:watson/import
+        #:watson/define/global
+        #:watson/define/macro
+        #:watson/define/function
+        #:watson/define/export
+        #:watson/define/import
         #:watson/module
         #:watson/reserved-word
         #:watson/default-macro)
