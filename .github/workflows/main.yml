@@ -1,0 +1,17 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lisp: [sbcl-bin, ccl-bin]
+    name: A job to test Common Lisp project
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test step
+      id: test
+      uses: eshamster/try-cl-test-on-gh-actions@v0.3.1
+      with:
+        lisp: '${{ matrix.lisp }}'
