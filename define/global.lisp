@@ -9,9 +9,9 @@
                 #:global
                 #:|mut|
                 #:mut)
-  (:import-from #:watson/type
+  (:import-from #:watson/parser/type
                 #:convert-type)
-  (:import-from #:watson/utils
+  (:import-from #:watson/parser/misc
                 #:parse-arg-name
                 #:parse-mod-nm))
 (in-package :watson/define/global)

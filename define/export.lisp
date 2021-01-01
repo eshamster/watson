@@ -6,8 +6,9 @@
                 #:|export|
                 #:|func|
                 #:func)
+  (:import-from #:watson/parser/misc
+                #:parse-arg-name)
   (:import-from #:watson/utils
-                #:parse-arg-name
                 #:symbol-to-string)
   (:import-from #:alexandria
                 #:hash-table-values))

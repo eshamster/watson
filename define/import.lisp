@@ -10,9 +10,9 @@
                 #:func
                 #:|memory|
                 #:memory)
-  (:import-from #:watson/type
+  (:import-from #:watson/parser/type
                 #:parse-typeuse)
-  (:import-from #:watson/utils
+  (:import-from #:watson/parser/misc
                 #:parse-arg-name
                 #:parse-mod-nm)
   (:import-from #:cl-ppcre

@@ -1,16 +1,16 @@
-(defpackage :watson/type
+(defpackage :watson/parser/type
   (:use #:cl)
   (:export #:convert-type
            #:parse-typeuse)
   (:import-from #:alexandria
                 #:make-keyword)
+  (:import-from #:watson/parser/misc
+                #:parse-arg-name)
   (:import-from #:watson/reserved-word
                 #:|i32|
                 #:|param|
-                #:|result|)
-  (:import-from #:watson/utils
-                #:parse-arg-name))
-(in-package :watson/type)
+                #:|result|))
+(in-package :watson/parser/type)
 
 (defvar *type-table* (make-hash-table))
 

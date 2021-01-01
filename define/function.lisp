@@ -2,17 +2,17 @@
   (:use #:cl
         #:watson/reserved-word)
   (:export #:defun.wat)
-  (:import-from #:watson/body-parser
+  (:import-from #:watson/parser/body-parser
                 #:parse-body)
   (:import-from #:watson/environment
                 #:wsymbol-function
                 #:intern.wat
                 #:wenv-function-symbols
                 #:wenv-import-symbols)
-  (:import-from #:watson/type
+  (:import-from #:watson/parser/type
                 #:convert-type
                 #:parse-typeuse)
-  (:import-from #:watson/utils
+  (:import-from #:watson/parser/misc
                 #:parse-arg-name)
   (:import-from #:alexandria
                 #:symbolicate))

@@ -1,4 +1,4 @@
-(defpackage :watson/body-parser
+(defpackage :watson/parser/body-parser
   (:use #:cl)
   (:export #:parse-body)
   (:import-from #:watson/built-in-func
@@ -34,11 +34,11 @@
                 #:|br|
                 #:br-if
                 #:|br-if|)
-  (:import-from #:watson/type
+  (:import-from #:watson/parser/type
                 #:convert-type)
-  (:import-from #:watson/utils
+  (:import-from #:watson/parser/misc
                 #:parse-arg-name))
-(in-package :watson/body-parser)
+(in-package :watson/parser/body-parser)
 
 ;; --- local environment --- ;;
 
