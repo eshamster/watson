@@ -49,7 +49,9 @@
 (in-package :watson/reserved-word)
 
 (defmacro defrw (sym &optional sym-for-print)
-  `(progn (defvar ,sym nil)
+  `(progn ,(when (eq (symbol-package sym)
+                     *package*)
+             `(defvar ,sym nil))
           (defvar ,(if sym-for-print
                        sym-for-print
                        (sym-to-sym-for-print sym))
