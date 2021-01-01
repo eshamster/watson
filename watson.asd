@@ -14,7 +14,8 @@
   :class :package-inferred-system
   :author "eshamster"
   :license "MIT"
-  :depends-on (:cl-ppcre
+  :depends-on (:alexandria
+               :cl-ppcre
                :watson/main)
   :description "watson: WAT (WebAssembly Text format) Structured ON Lisp"
   :long-description
