@@ -1,3 +1,5 @@
+![.github/workflows/main.yml](https://github.com/eshamster/watson/workflows/.github/workflows/main.yml/badge.svg)
+
 # watson
 
 watson: WAT (WebAssembly Text format) Structured ON Lisp
