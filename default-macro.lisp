@@ -3,13 +3,13 @@
   (:export #:for
            #:i32+
            #:i32-)
-  (:import-from #:watson/built-in-func
+  (:import-from #:watson/env/built-in-func
                 #:i32.const
                 #:i32.add
                 #:i32.sub)
   (:import-from #:watson/define/macro
                 #:defmacro.wat)
-  (:import-from #:watson/reserved-word
+  (:import-from #:watson/env/reserved-word
                 #:|if|
                 #:|then|
                 #:then

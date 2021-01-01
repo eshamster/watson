@@ -2,7 +2,7 @@
   (:use #:cl)
   (:export #:defexport.wat
            #:get-export-body-generators)
-  (:import-from #:watson/reserved-word
+  (:import-from #:watson/env/reserved-word
                 #:|export|
                 #:|func|
                 #:func)

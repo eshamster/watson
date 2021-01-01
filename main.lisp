@@ -1,5 +1,5 @@
 (defpackage :watson/main
-  (:use #:watson/built-in-func
+  (:use #:watson/env/built-in-func
         #:watson/define/global
         #:watson/define/macro
         #:watson/define/function
@@ -7,7 +7,7 @@
         #:watson/define/import
         #:watson/module
         #:watson/parser/macro
-        #:watson/reserved-word
+        #:watson/env/reserved-word
         #:watson/default-macro)
   (:export #:defmacro.wat
            #:defun.wat

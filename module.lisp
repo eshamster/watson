@@ -1,12 +1,12 @@
 (defpackage :watson/module
   (:use #:cl)
   (:export #:generate-wat-module)
-  (:import-from #:watson/environment
+  (:import-from #:watson/env/environment
                 #:wenv-import-body-generators
                 #:wenv-function-body-generators)
   (:import-from #:watson/define/export
                 #:get-export-body-generators)
-  (:import-from #:watson/reserved-word
+  (:import-from #:watson/env/reserved-word
                 #:|module|)
   (:import-from #:watson/util/list
                 #:clone-list-with-modification))

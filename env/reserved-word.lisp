@@ -1,4 +1,4 @@
-(defpackage :watson/reserved-word
+(defpackage :watson/env/reserved-word
   (:use #:cl)
   (:export #:|module|
 
@@ -46,7 +46,7 @@
                 #:sym-to-sym-for-print)
   (:import-from #:alexandria
                 #:symbolicate))
-(in-package :watson/reserved-word)
+(in-package :watson/env/reserved-word)
 
 (defmacro defrw (sym &optional sym-for-print)
   `(progn ,(when (eq (symbol-package sym)

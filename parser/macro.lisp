@@ -1,6 +1,6 @@
 (defpackage :watson/parser/macro
   (:use #:cl)
-  (:import-from #:watson/environment
+  (:import-from #:watson/env/environment
                 #:wsymbol-macro-function
                 #:intern.wat
                 #:*global-wat-env*))

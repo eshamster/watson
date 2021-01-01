@@ -1,4 +1,4 @@
-(defpackage :watson/environment
+(defpackage :watson/env/environment
   (:use #:cl)
   (:export #:wsymbol-function
            #:wsymbol-macro-function
@@ -15,7 +15,7 @@
            #:wenv-var-symbols)
   (:import-from #:alexandria
                 #:hash-table-values))
-(in-package :watson/environment)
+(in-package :watson/env/environment)
 
 ;; --- wat-symbol --- ;;
 

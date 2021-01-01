@@ -1,10 +1,10 @@
 (defpackage :watson/define/import
   (:use #:cl)
   (:export #:defimport.wat)
-  (:import-from #:watson/environment
+  (:import-from #:watson/env/environment
                 #:wsymbol-import
                 #:intern.wat)
-  (:import-from #:watson/reserved-word
+  (:import-from #:watson/env/reserved-word
                 #:|import|
                 #:|func|
                 #:func

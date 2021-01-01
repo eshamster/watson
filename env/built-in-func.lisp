@@ -1,4 +1,4 @@
-(defpackage :watson/built-in-func
+(defpackage :watson/env/built-in-func
   (:use #:cl)
   (:export #:built-in-func-p
            #:convert-built-in-func
@@ -18,7 +18,7 @@
                 #:sym-to-sym-for-print)
   (:import-from #:cl-ppcre
                 #:regex-replace-all))
-(in-package :watson/built-in-func)
+(in-package :watson/env/built-in-func)
 
 (defvar *built-in-funcs* (make-hash-table))
 

@@ -6,7 +6,7 @@
                 #:make-keyword)
   (:import-from #:watson/parser/misc
                 #:parse-arg-name)
-  (:import-from #:watson/reserved-word
+  (:import-from #:watson/env/reserved-word
                 #:|i32|
                 #:|param|
                 #:|result|))

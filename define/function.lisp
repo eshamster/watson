@@ -1,10 +1,10 @@
 (defpackage :watson/define/function
   (:use #:cl
-        #:watson/reserved-word)
+        #:watson/env/reserved-word)
   (:export #:defun.wat)
   (:import-from #:watson/parser/body-parser
                 #:parse-body)
-  (:import-from #:watson/environment
+  (:import-from #:watson/env/environment
                 #:wsymbol-function
                 #:intern.wat
                 #:wenv-function-symbols

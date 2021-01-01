@@ -1,12 +1,12 @@
 (defpackage :watson/parser/body-parser
   (:use #:cl)
   (:export #:parse-body)
-  (:import-from #:watson/built-in-func
+  (:import-from #:watson/env/built-in-func
                 #:built-in-func-p
                 #:convert-built-in-func)
   (:import-from #:watson/parser/macro
                 #:macroexpand.wat)
-  (:import-from #:watson/environment
+  (:import-from #:watson/env/environment
                 #:wsymbol-var
                 #:*global-wat-env*
                 #:intern.wat
@@ -15,7 +15,7 @@
                 #:wenv-import-symbols
                 #:wenv-var-symbols
                 #:wsymbol-macro-function)
-  (:import-from #:watson/reserved-word
+  (:import-from #:watson/env/reserved-word
                 #:|local|
                 #:local
                 #:|block|

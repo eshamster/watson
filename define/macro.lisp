@@ -4,7 +4,7 @@
   (:import-from #:alexandria
                 #:symbolicate
                 #:with-gensyms)
-  (:import-from #:watson/environment
+  (:import-from #:watson/env/environment
                 #:wsymbol-macro-function
                 #:intern.wat))
 (in-package :watson/define/macro)
