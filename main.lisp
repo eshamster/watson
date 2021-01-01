@@ -6,6 +6,7 @@
         #:watson/define/export
         #:watson/define/import
         #:watson/module
+        #:watson/parser/macro
         #:watson/reserved-word
         #:watson/default-macro)
   (:export #:defmacro.wat

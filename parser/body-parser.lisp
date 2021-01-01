@@ -4,7 +4,7 @@
   (:import-from #:watson/built-in-func
                 #:built-in-func-p
                 #:convert-built-in-func)
-  (:import-from #:watson/define/macro
+  (:import-from #:watson/parser/macro
                 #:macroexpand.wat)
   (:import-from #:watson/environment
                 #:wsymbol-var
