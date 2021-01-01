@@ -33,5 +33,7 @@
 
 (defsystem watson/t
   :class :package-inferred-system
-  :depends-on (:rove)
+  :depends-on (:rove
+               "watson/t/util/list"
+               "watson/t/util/symbol")
   :perform (test-op (o c) (symbol-call :rove '#:run c)))
