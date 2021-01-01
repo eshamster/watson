@@ -14,7 +14,7 @@
            #:i32.gt-u
            #:i32.store
            #:i32.load)
-  (:import-from #:watson/utils
+  (:import-from #:watson/util/symbol
                 #:sym-to-sym-for-print)
   (:import-from #:cl-ppcre
                 #:regex-replace-all))

@@ -42,7 +42,7 @@
            #:|br|
            #:br-if
            #:|br-if|)
-  (:import-from #:watson/utils
+  (:import-from #:watson/util/symbol
                 #:sym-to-sym-for-print)
   (:import-from #:alexandria
                 #:symbolicate))

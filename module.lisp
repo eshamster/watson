@@ -8,7 +8,7 @@
                 #:get-export-body-generators)
   (:import-from #:watson/reserved-word
                 #:|module|)
-  (:import-from #:watson/utils
+  (:import-from #:watson/util/list
                 #:clone-list-with-modification))
 (in-package :watson/module)
 
