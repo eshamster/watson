@@ -1,5 +1,7 @@
 (defpackage :watson/parser/macro
   (:use #:cl)
+  (:export #:macroexpand-1.wat
+           #:macroexpand.wat)
   (:import-from #:watson/env/environment
                 #:wsymbol-macro-function
                 #:intern.wat
