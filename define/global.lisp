@@ -12,7 +12,7 @@
   (:import-from #:watson/parser/type
                 #:convert-type)
   (:import-from #:watson/parser/misc
-                #:parse-arg-name
+                #:parse-var-name
                 #:parse-mod-nm))
 (in-package :watson/define/global)
 
@@ -26,7 +26,7 @@
 
 (defun generate-global-body (name mod-nm globaltype)
   `(|global|
-    ,(parse-arg-name name)
+    ,(parse-var-name name)
     (|import| ,@(parse-mod-nm mod-nm))
     ,(parse-globaltype globaltype)))
 

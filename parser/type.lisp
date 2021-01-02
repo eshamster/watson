@@ -5,7 +5,7 @@
   (:import-from #:alexandria
                 #:make-keyword)
   (:import-from #:watson/parser/misc
-                #:parse-arg-name)
+                #:parse-var-name)
   (:import-from #:watson/env/reserved-word
                 #:|i32|
                 #:|param|
@@ -44,7 +44,7 @@
 (defun parse-param (param)
   (ecase (length param)
     (1 `(|param| ,(convert-type (car param))))
-    (2 `(|param| ,(parse-arg-name (car param))
+    (2 `(|param| ,(parse-var-name (car param))
                  ,(convert-type (cadr param))))))
 
 (defun extract-arg-names (params)

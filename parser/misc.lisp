@@ -1,6 +1,6 @@
 (defpackage :watson/parser/misc
   (:use #:cl)
-  (:export #:parse-arg-name
+  (:export #:parse-var-name
            #:parse-mod-nm)
   (:import-from #:alexandria
                 #:symbolicate)
@@ -8,7 +8,7 @@
                 #:split))
 (in-package :watson/parser/misc)
 
-(defun parse-arg-name (arg-name)
+(defun parse-var-name (arg-name)
   (symbolicate '$ arg-name))
 
 (defun parse-mod-nm (mod-nm)

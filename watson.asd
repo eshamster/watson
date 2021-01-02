@@ -37,6 +37,7 @@
   :depends-on (:rove
                "watson/t/env/built-in-func"
                "watson/t/env/environment"
+               "watson/t/parser/misc"
                "watson/t/util/list"
                "watson/t/util/package"
                "watson/t/util/symbol")

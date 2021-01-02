@@ -13,7 +13,7 @@
                 #:convert-type
                 #:parse-typeuse)
   (:import-from #:watson/parser/misc
-                #:parse-arg-name)
+                #:parse-var-name)
   (:import-from #:alexandria
                 #:symbolicate))
 (in-package :watson/define/function)
@@ -30,7 +30,7 @@
   (multiple-value-bind (parsed-typeuse vars)
       (parse-typeuse (list args result))
     `(|func|
-      ,(parse-arg-name name)
+      ,(parse-var-name name)
       ,@parsed-typeuse
       ,@(parse-body body vars))))
 

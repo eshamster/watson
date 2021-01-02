@@ -13,7 +13,7 @@
   (:import-from #:watson/parser/type
                 #:parse-typeuse)
   (:import-from #:watson/parser/misc
-                #:parse-arg-name
+                #:parse-var-name
                 #:parse-mod-nm)
   (:import-from #:cl-ppcre
                 #:split))
@@ -45,11 +45,11 @@
 (defun parse-import-func-desc (name params)
   ;; Ex. name: foo, params: (((a i32) (b i32)) (i32))
   ;;     -> (func $foo (param $a i32) (param $b i32) (result $i32))
-  `(|func| ,(parse-arg-name name)
+  `(|func| ,(parse-var-name name)
            ,@(parse-typeuse params)))
 
 (defun parse-import-memory-desc (name params)
   ;; Ex. name: foo, params: (1)
   ;;     -> (memory $foo 1)
-  `(|memory| ,(parse-arg-name name)
+  `(|memory| ,(parse-var-name name)
              ,(car params)))

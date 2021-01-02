@@ -37,7 +37,7 @@
   (:import-from #:watson/parser/type
                 #:convert-type)
   (:import-from #:watson/parser/misc
-                #:parse-arg-name))
+                #:parse-var-name))
 (in-package :watson/parser/body-parser)
 
 ;; --- local environment --- ;;
@@ -93,7 +93,7 @@
 
 (defun parse-atom (atom)
   (if (var-p atom)
-      (parse-arg-name atom)
+      (parse-var-name atom)
       atom))
 
 ;; - special form - ;;

@@ -7,7 +7,7 @@
                 #:|func|
                 #:func)
   (:import-from #:watson/parser/misc
-                #:parse-arg-name)
+                #:parse-var-name)
   (:import-from #:watson/util/symbol
                 #:symbol-to-string)
   (:import-from #:alexandria
@@ -40,4 +40,4 @@
       (func (parse-export-func-desc param)))))
 
 (defun parse-export-func-desc (param)
-  `(|func| ,(parse-arg-name param)))
+  `(|func| ,(parse-var-name param)))
