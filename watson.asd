@@ -35,6 +35,8 @@
 (defsystem watson/t
   :class :package-inferred-system
   :depends-on (:rove
+               "watson/t/env/built-in-func"
+               "watson/t/env/environment"
                "watson/t/util/list"
                "watson/t/util/package"
                "watson/t/util/symbol")

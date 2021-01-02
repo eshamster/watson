@@ -80,6 +80,9 @@
           (set-var-empty ,wsymbol)
           ,wsymbol))
 
+(defun wsymbol-var (wsymbol)
+  (wat-symbol-var wsymbol))
+
 (defsetf wsymbol-var (wsymbol) (var)
   `(progn (set-function-empty ,wsymbol)
           (set-macro-function-empty ,wsymbol)

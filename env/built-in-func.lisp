@@ -47,6 +47,3 @@
 (def-built-in-func i32.gt-u)
 (def-built-in-func i32.store)
 (def-built-in-func i32.load)
-
-(def-built-in-func get-global |global.get|)
-(def-built-in-func set-global |global.set|)
