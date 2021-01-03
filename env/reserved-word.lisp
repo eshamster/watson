@@ -6,6 +6,7 @@
            #:|export|
            #:|func|
            #:func
+           #:|call|
            #:|memory|
            #:memory
            #:|global|
@@ -35,9 +36,9 @@
            #:set-local
            #:|set_local|
            #:get-global
-           #:|global.get|
+           #:|get_global|
            #:set-global
-           #:|global.set|
+           #:|set_global|
            #:br
            #:|br|
            #:br-if
@@ -62,6 +63,7 @@
 (defrw import)
 (defrw export)
 (defrw func)
+(defrw call)
 (defrw memory)
 (defrw global)
 (defrw mut)
@@ -84,7 +86,7 @@
 (defrw local)
 (defrw get-local)
 (defrw set-local)
-(defrw get-global |global.get|)
-(defrw set-global |global.set|)
+(defrw get-global)
+(defrw set-global)
 (defrw br)
 (defrw br-if)

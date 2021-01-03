@@ -16,6 +16,7 @@
                 #:wenv-var-symbols
                 #:wsymbol-macro-function)
   (:import-from #:watson/env/reserved-word
+                #:|call|
                 #:|local|
                 #:local
                 #:|block|
@@ -27,13 +28,13 @@
                 #:set-local
                 #:|set_local|
                 #:get-global
-                #:|global.get|
+                #:|get_global|
                 #:set-global
-                #:|global.set|
+                #:|set_global|
                 #:br
                 #:|br|
                 #:br-if
-                #:|br-if|)
+                #:|br_if|)
   (:import-from #:watson/parser/type
                 #:convert-type)
   (:import-from #:watson/parser/misc
@@ -42,7 +43,7 @@
 
 ;; --- local environment --- ;;
 
-(defvar *org-global-wat-env* nil)
+(defvar *org-global-wat-env*)
 
 (defun var-p (sym)
   (some (lambda (syms)
@@ -108,13 +109,15 @@
              `(|local| ,(parse-atom var)
                        ,(convert-type type))))
     (block (destructuring-bind (var &rest rest-form) (cdr form)
-             (setf (wsymbol-var (intern.wat var)) t)
-             `(|block| ,(parse-atom var)
-                       ,@(parse-form rest-form))))
+             (let ((*global-wat-env* (clone-wenvironment)))
+               (setf (wsymbol-var (intern.wat var)) t)
+               `(|block| ,(parse-atom var)
+                         ,@(parse-form rest-form)))))
     (loop (destructuring-bind (var &rest rest-form) (cdr form)
-             (setf (wsymbol-var (intern.wat var)) t)
-             `(|loop| ,(parse-atom var)
-                      ,@(parse-form rest-form))))
+            (let ((*global-wat-env* (clone-wenvironment)))
+              (setf (wsymbol-var (intern.wat var)) t)
+              `(|loop| ,(parse-atom var)
+                       ,@(parse-form rest-form)))))
     (get-local (parse-1-arg-special-form '|get_local| (cdr form)))
     (set-local (parse-1-arg-special-form '|set_local| (cdr form)))
     (get-global (parse-1-arg-special-form '|get_global| (cdr form)))
