@@ -1,4 +1,4 @@
-(defpackage :watson/define/global
+(defpackage :watson/definer/global
   (:use #:cl)
   (:export #:defglobal.wat)
   (:import-from #:watson/env/environment
@@ -14,7 +14,7 @@
   (:import-from #:watson/parser/misc
                 #:parse-var-name
                 #:parse-mod-nm))
-(in-package :watson/define/global)
+(in-package :watson/definer/global)
 
 (defmacro defglobal.wat (name mod-nm globaltype)
   ;; Ex. (defglobal.wat g js.global (mut i32))

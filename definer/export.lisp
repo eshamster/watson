@@ -1,4 +1,4 @@
-(defpackage :watson/define/export
+(defpackage :watson/definer/export
   (:use #:cl)
   (:export #:defexport.wat
            #:get-export-body-generators)
@@ -12,7 +12,7 @@
                 #:symbol-to-string)
   (:import-from #:alexandria
                 #:hash-table-values))
-(in-package :watson/define/export)
+(in-package :watson/definer/export)
 
 ;; https://webassembly.github.io/spec/core/text/modules.html#exports
 

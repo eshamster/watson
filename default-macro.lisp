@@ -7,7 +7,7 @@
                 #:i32.const
                 #:i32.add
                 #:i32.sub)
-  (:import-from #:watson/define/macro
+  (:import-from #:watson/definer/macro
                 #:defmacro.wat)
   (:import-from #:watson/env/reserved-word
                 #:|if|
