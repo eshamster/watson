@@ -8,7 +8,8 @@
                 #:|global|
                 #:global
                 #:|mut|
-                #:mut)
+                #:mut
+                #:|import|)
   (:import-from #:watson/parser/type
                 #:convert-type)
   (:import-from #:watson/parser/misc

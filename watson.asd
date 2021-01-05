@@ -35,6 +35,11 @@
 (defsystem watson/t
   :class :package-inferred-system
   :depends-on (:rove
+               "watson/t/definer/function"
+               "watson/t/definer/export"
+               "watson/t/definer/global"
+               "watson/t/definer/import"
+               "watson/t/definer/macro"
                "watson/t/env/built-in-func"
                "watson/t/env/environment"
                "watson/t/parser/body-parser"
