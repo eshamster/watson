@@ -2,7 +2,7 @@
   (:use #:cl
         #:rove
         #:watson/parser/body-parser
-        #:watson/default-macro)
+        #:watson/default/macro)
   (:import-from #:watson/env/built-in-func
                 #:i32.add)
   (:import-from #:watson/env/environment

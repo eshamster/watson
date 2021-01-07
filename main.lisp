@@ -8,7 +8,7 @@
         #:watson/module
         #:watson/parser/macro
         #:watson/env/reserved-word
-        #:watson/default-macro)
+        #:watson/default/macro)
   (:export #:defmacro.wat
            #:defun.wat
            #:defexport.wat

@@ -1,4 +1,4 @@
-(defpackage :watson/default-macro
+(defpackage :watson/default/macro
   (:use #:cl)
   (:export #:for
            #:i32+
@@ -24,7 +24,7 @@
                 #:set-local)
   (:import-from #:alexandria
                 #:symbolicate))
-(in-package :watson/default-macro)
+(in-package :watson/default/macro)
 
 ;; --- control macros --- ;;
 
@@ -70,6 +70,8 @@
   ;; - Can use this only at head of function.
   ;; - A variable is not hidden to others.
   ;; - The scope is same to "local" operator.
+  ;;
+  ;; Probably, this should be defined as a special form.
   `(progn ,@(mapcar (lambda (var-form)
                       (let ((var-type (if (listp (car var-form))
                                           (car var-form)
@@ -90,6 +92,7 @@
 (defmacro.wat let* (var-form &body body)
   `(let ,var-form ,@body))
 
+;; experimental
 (defmacro.wat for (for-name (&key init break mod) &body body)
   (let ((block-name (symbolicate for-name "-BLOCK"))
         (loop-name  (symbolicate for-name "-LOOP")))
@@ -104,26 +107,25 @@
 ;; --- calculation macros --- ;;
 
 (defmacro def-calculation-macro (name const op)
-  `(defmacro.wat ,name (&rest numbers)
-     (flet ((parse-number (number)
-              (cond ((numberp number)
-                     `(,',const ,number))
-                    ;; XXX: Strictry speaking, require to judge
-                    ;; if the "number" is a local variable,
-                    ;; before adding "get-local"
-                    ((atom number)
-                     `(get-local ,number))
-                    (t number))))
-       (case (length numbers)
+  `(defmacro.wat ,name (&rest args)
+     (flet ((parse-arg (arg)
+              (cond ((numberp arg)
+                     `(,',const ,arg))
+                    (t arg))))
+       (case (length args)
          (0 `(,',const 0))
-         (t (labels ((rec (rest-numbers)
-                       (let ((head (car rest-numbers))
-                             (rest (cdr rest-numbers)))
+         ;; XXX: Strictry speaking, require to judge
+         ;; if the "arg" is a local variable,
+         ;; before adding "get-local"
+         (1 `(get-local ,(car args)))
+         (t (labels ((rec (rest-args)
+                       (let ((head (car rest-args))
+                             (rest (cdr rest-args)))
                          (if rest
-                             `(,',op ,(parse-number head)
+                             `(,',op ,(parse-arg head)
                                      ,(rec rest))
-                             (parse-number head)))))
-              (rec numbers)))))))
+                             (parse-arg head)))))
+              (rec args)))))))
 
 (def-calculation-macro i32+ i32.const i32.add)
 (def-calculation-macro i32- i32.const i32.sub)
