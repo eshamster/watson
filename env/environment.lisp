@@ -141,10 +141,14 @@
 
 ;; - body getter - ;;
 
-(defun wenv-function-body-generators (&optional (wenv *global-wat-env*))
+(defun wenv-function-body-generators (package &optional (wenv *global-wat-env*))
   (mapcar #'wat-symbol-function
-          (extract-wsymbols-by-accessor wenv #'wat-symbol-function)))
+          (remove-if (lambda (wsym)
+                       (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
+                     (extract-wsymbols-by-accessor wenv #'wat-symbol-function))))
 
-(defun wenv-import-body-generators (&optional (wenv *global-wat-env*))
+(defun wenv-import-body-generators (package &optional (wenv *global-wat-env*))
   (mapcar #'wat-symbol-import
-          (extract-wsymbols-by-accessor wenv #'wat-symbol-import)))
+          (remove-if (lambda (wsym)
+                       (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
+                     (extract-wsymbols-by-accessor wenv #'wat-symbol-import))))

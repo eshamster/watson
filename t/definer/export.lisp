@@ -25,5 +25,6 @@
           (testing name
             (funcall init)
             (ok (equalp (funcall (gethash js-func-name exports))
-                        expect))))))))
-
+                        expect))
+            (ok (= (length (get-export-body-generators *package*))
+                   1))))))))

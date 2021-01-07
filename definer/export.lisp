@@ -11,15 +11,19 @@
   (:import-from #:watson/util/symbol
                 #:symbol-to-string)
   (:import-from #:alexandria
-                #:hash-table-values))
+                #:hash-table-keys))
 (in-package :watson/definer/export)
 
 ;; https://webassembly.github.io/spec/core/text/modules.html#exports
 
 (defvar *exports* (make-hash-table))
 
-(defun get-export-body-generators ()
-  (hash-table-values *exports*))
+(defun get-export-body-generators (package)
+  (mapcar (lambda (sym)
+            (gethash sym *exports*))
+          (remove-if (lambda (sym)
+                       (not (eq package (symbol-package sym))))
+                     (hash-table-keys *exports*))))
 
 (defmacro defexport.wat (js-func-name export-desc)
   ;; Ex. (defexport.wat js-func-name (func foo))

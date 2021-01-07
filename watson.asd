@@ -47,6 +47,7 @@
                "watson/t/parser/macro"
                "watson/t/parser/misc"
                "watson/t/parser/type"
+               "watson/t/module"
                "watson/t/util/list"
                "watson/t/util/package"
                "watson/t/util/symbol")

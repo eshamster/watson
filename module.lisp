@@ -9,22 +9,27 @@
   (:import-from #:watson/env/reserved-word
                 #:|module|)
   (:import-from #:watson/util/list
-                #:clone-list-with-modification))
+                #:clone-list-with-modification)
+  (:import-from #:watson/util/package
+                #:package-use-list-rec))
 (in-package :watson/module)
 
-(defun generate-wat-module% ()
+(defun generate-wat-module% (packages)
   `(|module|
-    ,@(mapcar #'funcall (wenv-import-body-generators))
-    ,@(mapcar #'funcall (wenv-function-body-generators))
-    ,@(mapcar #'funcall (get-export-body-generators))))
+    ,@(mapcar #'funcall (mapcan #'wenv-import-body-generators packages))
+    ,@(mapcar #'funcall (mapcan #'wenv-function-body-generators packages))
+    ,@(mapcar #'funcall (mapcan #'get-export-body-generators packages))))
 
-(defun generate-wat-module ()
-  (let ((str-list (clone-list-with-modification
-                   (generate-wat-module%)
-                   (lambda (elem)
-                     (typecase elem
-                       (symbol (symbol-name elem))
-                       (string (format nil "~S" elem))
-                       (t elem))))))
-    str-list))
-
+(defun generate-wat-module (&rest base-packages)
+  "Generate module list (that can be output by \"princ\" as WAT)
+under the pacakges with their using packages found recursively"
+  (let ((packages (remove-duplicates
+                   (append base-packages
+                           (mapcan #'package-use-list-rec base-packages)))))
+    (clone-list-with-modification
+     (generate-wat-module% packages)
+     (lambda (elem)
+       (typecase elem
+         (symbol (symbol-name elem))
+         (string (format nil "~S" elem))
+         (t elem))))))

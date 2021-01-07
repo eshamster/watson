@@ -30,7 +30,7 @@
           (dolist (sym '(hoge1 hoge2))
             (ok (find sym syms)))))
       (testing "wenv-import-body-generators"
-        (let ((funcs (wenv-import-body-generators)))
+        (let ((funcs (wenv-import-body-generators *package*)))
           (ok (= (length funcs) 2))
           (dolist (func funcs)
             (ok (find (funcall func) '(1 2)))))))))
@@ -53,7 +53,7 @@
           (dolist (sym '(hoge1 hoge2))
             (ok (find sym syms)))))
       (testing "wenv-function-body-generators"
-        (let ((funcs (wenv-function-body-generators)))
+        (let ((funcs (wenv-function-body-generators *package*)))
           (ok (= (length funcs) 2))
           (dolist (func funcs)
             (ok (find (funcall func) '(1 2)))))))))
