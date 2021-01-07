@@ -49,5 +49,6 @@
       (defimport.wat import a.b (func ()))
       (defexport.wat js-func-name (func fn))
       ;; test
-      (ok (string= (format nil "~A" (generate-wat-module *package*))
-                   "(module (import \"a\" \"b\" (func $IMPORT)) (func $FN) (export \"js_func_name\" (func $FN)))")))))
+      (let ((*print-right-margin* 1000))
+        (ok (string= (format nil "~A" (generate-wat-module *package*))
+                     "(module (import \"a\" \"b\" (func $IMPORT)) (func $FN) (export \"js_func_name\" (func $FN)))"))))))
