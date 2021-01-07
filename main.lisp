@@ -1,4 +1,5 @@
 (defpackage :watson/main
+  (:nicknames #:watson)
   (:use #:watson/env/built-in-func
         #:watson/definer/global
         #:watson/definer/macro
