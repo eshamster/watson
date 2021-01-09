@@ -3,24 +3,12 @@
         #:rove
         #:watson/parser/type)
   (:import-from #:watson/env/reserved-word
-                #:|i32|
                 #:|param|
-                #:|result|))
+                #:|result|)
+  (:import-from #:watson/env/type
+                #:i32
+                #:|i32|))
 (in-package :watson/t/parser/type)
-
-(deftest convert-type
-  (let ((tests '((:name "type"
-                  :input i32
-                  :expect |i32|)
-                 (:name "ERROR: not type"
-                  :input hoge
-                  :expect-err t))))
-    (dolist (tt tests)
-      (destructuring-bind (&key name input expect expect-err) tt
-        (testing name
-          (if expect-err
-              (ok (signals (convert-type input)))
-              (ok (eq (convert-type input) expect))))))))
 
 (deftest parse-typeuse
   (let ((tests '((:name "only param case"

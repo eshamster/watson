@@ -29,7 +29,9 @@
                 #:br
                 #:|br|
                 #:br-if
-                #:|br_if|
+                #:|br_if|)
+  (:import-from #:watson/env/type
+                #:i32
                 #:|i32|))
 (in-package :watson/t/parser/body-parser)
 

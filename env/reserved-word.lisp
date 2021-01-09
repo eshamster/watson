@@ -27,8 +27,6 @@
            #:|loop|
            #:loop
 
-           #:|i32|
-
            #:local
            #:|local|
            #:get-local
@@ -76,10 +74,6 @@
 
 (defrw block)
 (defrw loop)
-
-;; - type - ;;
-
-(defrw i32)
 
 ;; - special form - ;;
 

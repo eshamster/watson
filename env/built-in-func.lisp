@@ -15,9 +15,7 @@
            #:i32.store
            #:i32.load)
   (:import-from #:watson/util/symbol
-                #:sym-to-sym-for-print)
-  (:import-from #:cl-ppcre
-                #:regex-replace-all))
+                #:sym-to-sym-for-print))
 (in-package :watson/env/built-in-func)
 
 (defvar *built-in-funcs* (make-hash-table))

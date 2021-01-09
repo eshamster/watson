@@ -43,6 +43,7 @@
                "watson/t/definer/macro"
                "watson/t/env/built-in-func"
                "watson/t/env/environment"
+               "watson/t/env/type"
                "watson/t/parser/body-parser"
                "watson/t/parser/macro"
                "watson/t/parser/misc"

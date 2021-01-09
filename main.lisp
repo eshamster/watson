@@ -24,6 +24,9 @@
            #:block
            #:loop
 
+           ;; type
+           #:i32
+
            ;; default macros
            #:for
            #:i32+

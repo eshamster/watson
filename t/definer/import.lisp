@@ -7,14 +7,15 @@
                 #:wsymbol-import
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
-                #:i32
-                #:|i32|
                 #:func
                 #:|func|
                 #:|import|
                 #:memory
                 #:|memory|
-                #:|param|))
+                #:|param|)
+  (:import-from #:watson/env/type
+                #:i32
+                #:|i32|))
 (in-package :watson/t/definer/import)
 
 (deftest defimport.wat

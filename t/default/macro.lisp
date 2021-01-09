@@ -16,8 +16,10 @@
                 #:block
                 #:loop
                 #:br
-                #:br-if
-                #:i32)
+                #:br-if)
+  (:import-from #:watson/env/type
+                #:i32
+                #:|i32|)
   (:import-from #:watson/parser/macro
                 #:macroexpand-1.wat))
 (in-package :watson/t/default/macro)

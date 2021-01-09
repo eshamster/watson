@@ -9,12 +9,13 @@
   (:import-from #:watson/env/built-in-func
                 #:i32.add)
   (:import-from #:watson/env/reserved-word
-                #:i32
-                #:|i32|
                 #:|func|
                 #:|param|
                 #:|result|
-                #:|get_local|))
+                #:|get_local|)
+  (:import-from #:watson/env/type
+                #:i32
+                #:|i32|))
 (in-package :watson/t/definer/function)
 
 (deftest defun.wat

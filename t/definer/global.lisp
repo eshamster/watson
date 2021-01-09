@@ -7,12 +7,13 @@
                 #:wsymbol-import
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
-                #:i32
-                #:|i32|
                 #:mut
                 #:|mut|
                 #:|import|
-                #:|global|))
+                #:|global|)
+  (:import-from #:watson/env/type
+                #:i32
+                #:|i32|))
 (in-package :watson/t/definer/global)
 
 (deftest defglobal.wat
