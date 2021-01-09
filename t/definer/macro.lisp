@@ -3,8 +3,7 @@
         #:rove
         #:watson/definer/macro)
   (:import-from #:watson/env/environment
-                #:*global-wat-env*
-                #:clone-wenvironment)
+                #:with-cloned-wenvironment)
   (:import-from #:watson/parser/macro
                 #:macroexpand.wat))
 (in-package :watson/t/definer/macro)
@@ -18,7 +17,7 @@
                   :expect (fuga a b)))))
     (dolist (tt tests)
       (destructuring-bind (&key name init test-list expect) tt
-        (let ((*global-wat-env* (clone-wenvironment)))
+        (with-cloned-wenvironment
           (testing name
             (funcall init)
             (ok (equalp (macroexpand.wat test-list)

@@ -6,8 +6,7 @@
   (:import-from #:watson/env/built-in-func
                 #:i32.add)
   (:import-from #:watson/env/environment
-                #:*global-wat-env*
-                #:clone-wenvironment
+                #:with-cloned-wenvironment
                 #:wsymbol-function
                 #:wsymbol-macro-function
                 #:intern.wat)
@@ -51,7 +50,7 @@
                           :args (a b))
                   :expect c))))
     (dolist (tt tests)
-      (let ((*global-wat-env* (clone-wenvironment)))
+      (with-cloned-wenvironment
         (destructuring-bind (&key name init input expect) tt
           (destructuring-bind (&key body args) input
             (when init
@@ -127,7 +126,7 @@
                   :expect (|block| $blk
                                    (|br_if| $blk))))))
     (dolist (tt tests)
-      (let ((*global-wat-env* (clone-wenvironment)))
+      (with-cloned-wenvironment
         (destructuring-bind (&key name input expect) tt
           (destructuring-bind (&key body args) input
             (testing name
@@ -145,7 +144,7 @@
                             :args (a b))
                     :expect (,|i32.add| (|get_local| $a) (|get_local| $b))))))
       (dolist (tt tests)
-        (let ((*global-wat-env* (clone-wenvironment)))
+        (with-cloned-wenvironment
           (destructuring-bind (&key name input expect) tt
             (destructuring-bind (&key body args) input
               (testing name
@@ -166,7 +165,7 @@
                             :args (a b))
                     :expect (,|i32.add| (|get_local| $a) (|get_local| $b))))))
       (dolist (tt tests)
-        (let ((*global-wat-env* (clone-wenvironment)))
+        (with-cloned-wenvironment
           (destructuring-bind (&key name init input expect) tt
             (destructuring-bind (&key body args) input
               (when init
@@ -191,7 +190,7 @@
                           :args (a b))
                   :expect (|call| $hoge (|get_local| $a) (|get_local| $b))))))
     (dolist (tt tests)
-      (let ((*global-wat-env* (clone-wenvironment)))
+      (with-cloned-wenvironment
         (destructuring-bind (&key name init input expect) tt
           (destructuring-bind (&key body args) input
             (when init

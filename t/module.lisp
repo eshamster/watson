@@ -9,16 +9,15 @@
   (:import-from #:watson/definer/export
                 #:defexport.wat)
   (:import-from #:watson/env/environment
-                #:*global-wat-env*
-                #:clone-wenvironment)
+                #:with-cloned-wenvironment)
   (:import-from #:watson/env/reserved-word
                 #:func))
 (in-package :watson/t/module)
 
 (defmacro with-test-env (&body body)
-  `(let* ((watson/definer/export::*exports* (make-hash-table))
-          (*global-wat-env* (clone-wenvironment)))
-     ,@body))
+  `(let ((watson/definer/export::*exports* (make-hash-table)))
+     (with-cloned-wenvironment
+       ,@body)))
 
 (deftest generate-wat-module
   (testing "count elements"
@@ -43,12 +42,11 @@
           (ok (= (count-target "import") 4))
           (ok (= (count-target "export") 2))))))
   (with-test-env
-    (let ((*global-wat-env* (clone-wenvironment)))
-      ;; define
-      (defun.wat fn () ())
-      (defimport.wat import a.b (func ()))
-      (defexport.wat js-func-name (func fn))
-      ;; test
-      (let ((*print-right-margin* 1000))
-        (ok (string= (format nil "~A" (generate-wat-module *package*))
-                     "(module (import \"a\" \"b\" (func $IMPORT)) (func $FN) (export \"js_func_name\" (func $FN)))"))))))
+    ;; define
+    (defun.wat fn () ())
+    (defimport.wat import a.b (func ()))
+    (defexport.wat js-func-name (func fn))
+    ;; test
+    (let ((*print-right-margin* 1000))
+      (ok (string= (format nil "~A" (generate-wat-module *package*))
+                   "(module (import \"a\" \"b\" (func $IMPORT)) (func $FN) (export \"js_func_name\" (func $FN)))")))))

@@ -7,6 +7,7 @@
            #:*global-wat-env*
            #:intern.wat
            #:clone-wenvironment
+           #:with-cloned-wenvironment
            #:wenv-function-symbols
            #:wenv-macro-function-symbols
            #:wenv-import-symbols
@@ -105,6 +106,10 @@
     result))
 
 (defvar *global-wat-env* (make-wat-environment))
+
+(defmacro with-cloned-wenvironment (&body body)
+  `(let ((*global-wat-env* (clone-wenvironment)))
+     ,@body))
 
 (defun intern.wat (sym)
   (let ((table (wat-environment-symbol-to-wat-symbols

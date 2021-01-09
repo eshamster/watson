@@ -3,8 +3,7 @@
         #:rove
         #:watson/definer/import)
   (:import-from #:watson/env/environment
-                #:*global-wat-env*
-                #:clone-wenvironment
+                #:with-cloned-wenvironment
                 #:wsymbol-import
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
@@ -32,7 +31,7 @@
                   :expect (|import| "js" "mem" (|memory| $m 1))))))
     (dolist (tt tests)
       (destructuring-bind (&key name init target-sym expect) tt
-        (let ((*global-wat-env* (clone-wenvironment)))
+        (with-cloned-wenvironment
           (testing name
             (funcall init)
             (ok (equalp (funcall (wsymbol-import (intern.wat target-sym)))

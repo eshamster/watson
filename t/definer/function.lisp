@@ -3,8 +3,7 @@
         #:rove
         #:watson/definer/function)
   (:import-from #:watson/env/environment
-                #:*global-wat-env*
-                #:clone-wenvironment
+                #:with-cloned-wenvironment
                 #:wsymbol-function
                 #:intern.wat)
   (:import-from #:watson/env/built-in-func
@@ -31,7 +30,7 @@
                                     (,i32.add (|get_local| $a) (|get_local| $b)))))))
       (dolist (tt tests)
         (destructuring-bind (&key name init target-sym expect) tt
-          (let ((*global-wat-env* (clone-wenvironment)))
+          (with-cloned-wenvironment
             (testing name
               (funcall init)
               (ok (equalp (funcall (wsymbol-function (intern.wat target-sym)))

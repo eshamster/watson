@@ -8,9 +8,9 @@
                 #:macroexpand.wat)
   (:import-from #:watson/env/environment
                 #:wsymbol-var
-                #:*global-wat-env*
                 #:intern.wat
                 #:clone-wenvironment
+                #:with-cloned-wenvironment
                 #:wenv-function-symbols
                 #:wenv-import-symbols
                 #:wenv-var-symbols
@@ -55,12 +55,12 @@
 ;; --- parser --- ;;
 
 (defun parse-body (body args)
-  (let ((*org-global-wat-env* *global-wat-env*)
-        (*global-wat-env* (clone-wenvironment)))
-    (dolist (arg args)
-      (setf (wsymbol-var (intern.wat arg)) t))
-    (flatten-progn-all
-     (parse-form body))))
+  (let ((*org-global-wat-env* (clone-wenvironment)))
+    (with-cloned-wenvironment
+      (dolist (arg args)
+        (setf (wsymbol-var (intern.wat arg)) t))
+      (flatten-progn-all
+       (parse-form body)))))
 
 (defun flatten-progn-all (body)
   ;; Ex. ((progn 1 2) 3 (progn 4 (progn 5))) -> (1 2 3 4 5)
@@ -109,12 +109,12 @@
              `(|local| ,(parse-atom var)
                        ,(convert-type type))))
     (block (destructuring-bind (var &rest rest-form) (cdr form)
-             (let ((*global-wat-env* (clone-wenvironment)))
+             (with-cloned-wenvironment
                (setf (wsymbol-var (intern.wat var)) t)
                `(|block| ,(parse-atom var)
                          ,@(parse-form rest-form)))))
     (loop (destructuring-bind (var &rest rest-form) (cdr form)
-            (let ((*global-wat-env* (clone-wenvironment)))
+            (with-cloned-wenvironment
               (setf (wsymbol-var (intern.wat var)) t)
               `(|loop| ,(parse-atom var)
                        ,@(parse-form rest-form)))))
