@@ -3,7 +3,13 @@
   (:export #:convert-type
 
            #:i32
-           #:|i32|)
+           #:|i32|
+           #:i64
+           #:|i64|
+           #:f32
+           #:|f32|
+           #:f64
+           #:|f64|)
   (:import-from #:watson/util/symbol
                 #:sym-to-sym-for-print))
 (in-package :watson/env/type)
@@ -22,4 +28,9 @@
           (setf (gethash ',sym *type-table*)
                 ',(sym-to-sym-for-print sym))))
 
+;; Cf. https://webassembly.github.io/spec/core/text/types.html
+
 (def-wat-type i32)
+(def-wat-type i64)
+(def-wat-type f32)
+(def-wat-type f64)
