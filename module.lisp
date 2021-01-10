@@ -21,8 +21,8 @@
     ,@(mapcar #'funcall (mapcan #'get-export-body-generators packages))))
 
 (defun generate-wat-module (&rest base-packages)
-  "Generate module list (that can be output by \"princ\" as WAT)
-under the pacakges with their using packages found recursively"
+  "Generate list that can be output by \"princ\" as WAT.
+It uses definitions in packages specified by \"base-packages\" and their used pacakges (used packages are recursively searched)."
   (let ((packages (remove-duplicates
                    (append base-packages
                            (mapcan #'package-use-list-rec base-packages)))))

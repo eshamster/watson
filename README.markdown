@@ -5,6 +5,7 @@
 watson: WAT (WebAssembly Text format) Structured ON Lisp
 
 ## Usage
+### Simple case
 
 ```lisp
 (ql:quickload :watson)
@@ -65,11 +66,52 @@ Cf. Format above by hand
     (local $RESULT i32)
     (if (i32.ge_u (i32.const 1) (get_local $X))
       (then (set_local $RESULT (i32.const 1)))
-      (else
-        (i32.mul (get_local $X)
-        (call $FACTORIAL (i32.sub (get_local $X) (i32.const 1))))
-        (set_local $RESULT)))
+      (else (i32.mul (get_local $X)
+                     (call $FACTORIAL (i32.sub (get_local $X) (i32.const 1))))
+            (set_local $RESULT)))
     (get_local $RESULT))
+  (export "exported_func" (func $MAIN)))
+```
+
+### Macro
+
+You can define and use macros.
+
+```lisp
+(ql:quickload :watson)
+
+(defpackage :sample-wat-macro
+  (:use :cl
+        :watson))
+(in-package :sample-wat-macro)
+
+(defimport.wat log console.log (func ((i32))))
+
+(defmacro.wat incf-i32 (place &optional (added '(i32.const 1)))
+  `(set-local ,place (i32.add ,place ,added)))
+
+(defun.wat main () ()
+  (let (((x i32) (i32.const 5)))
+    (incf-i32 x)
+    (log x)))
+
+(defexport.wat exported-func (func main))
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (let ((*print-pretty* t))
+    (princ (generate-wat-module *package*))))
+```
+
+The result is the following (formatted by hand).
+
+```wat
+(module
+  (import "console" "log" (func $LOG (param i32)))
+  (func $MAIN (local $X i32)
+    (set_local $X (i32.const 5))
+    (set_local $X (i32.add (get_local $X) (i32.const 1)))
+    (call $LOG (get_local $X)))
   (export "exported_func" (func $MAIN)))
 ```
 
