@@ -1,12 +1,48 @@
 (defpackage :watson/default/macro
   (:use #:cl)
   (:export #:for
+
            #:i32+
-           #:i32-)
+           #:i32-
+           #:i32*
+           #:i32s/
+           #:i32u/
+
+           #:i64+
+           #:i64-
+           #:i64*
+           #:i64s/
+           #:i64u/
+
+           #:f32+
+           #:f32-
+           #:f32*
+           #:f32/
+
+           #:f64+
+           #:f64-
+           #:f64*
+           #:f64/)
   (:import-from #:watson/env/built-in-func
                 #:i32.const
                 #:i32.add
-                #:i32.sub)
+                #:i32.sub
+                #:i32.mul
+                #:i32.div-s
+                #:i32.div-u
+                #:i64.add
+                #:i64.sub
+                #:i64.mul
+                #:i64.div-s
+                #:i64.div-u
+                #:f32.add
+                #:f32.sub
+                #:f32.mul
+                #:f32.div
+                #:f64.add
+                #:f64.sub
+                #:f64.mul
+                #:f64.div)
   (:import-from #:watson/definer/macro
                 #:defmacro.wat)
   (:import-from #:watson/env/reserved-word
@@ -106,14 +142,14 @@
 
 ;; --- calculation macros --- ;;
 
-(defmacro def-calculation-macro (name const op)
+(defmacro def-calculation-macro (name const initial-value op)
   `(defmacro.wat ,name (&rest args)
      (flet ((parse-arg (arg)
               (cond ((numberp arg)
                      `(,',const ,arg))
                     (t arg))))
        (case (length args)
-         (0 `(,',const 0))
+         (0 `(,',const ,',initial-value))
          ;; XXX: Strictry speaking, require to judge
          ;; if the "arg" is a local variable,
          ;; before adding "get-local"
@@ -127,5 +163,24 @@
                              (parse-arg head)))))
               (rec args)))))))
 
-(def-calculation-macro i32+ i32.const i32.add)
-(def-calculation-macro i32- i32.const i32.sub)
+(def-calculation-macro i32+ i32.const 0 i32.add)
+(def-calculation-macro i32- i32.const 0 i32.sub)
+(def-calculation-macro i32* i32.const 1 i32.mul)
+(def-calculation-macro i32s/ i32.const 1 i32.div-s)
+(def-calculation-macro i32u/ i32.const 1 i32.div-u)
+
+(def-calculation-macro i64+ i64.const 0 i64.add)
+(def-calculation-macro i64- i64.const 0 i64.sub)
+(def-calculation-macro i64* i64.const 1 i64.mul)
+(def-calculation-macro i64s/ i64.const 1 i64.div-s)
+(def-calculation-macro i64u/ i64.const 1 i64.div-u)
+
+(def-calculation-macro f32+ f32.const 0 f32.add)
+(def-calculation-macro f32- f32.const 0 f32.sub)
+(def-calculation-macro f32* f32.const 1 f32.mul)
+(def-calculation-macro f32/ f32.const 1 f32.div)
+
+(def-calculation-macro f64+ f64.const 0 f64.add)
+(def-calculation-macro f64- f64.const 0 f64.sub)
+(def-calculation-macro f64* f64.const 1 f64.mul)
+(def-calculation-macro f64/ f64.const 1 f64.div)

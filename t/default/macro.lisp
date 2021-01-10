@@ -5,7 +5,10 @@
   (:import-from #:watson/env/built-in-func
                 #:i32.const
                 #:i32.add
-                #:i32.sub)
+                #:i32.sub
+                #:i32.mul
+                #:i32.div-s
+                #:i32.div-u)
   (:import-from #:watson/env/reserved-word
                 #:|if|
                 #:|then|
@@ -148,7 +151,8 @@
                       expect)))))))
 
 (deftest calculation-macro
-  (let ((tests `((:name "no argument case"
+  (let ((tests `(;; i32
+                 (:name "no argument case"
                   :test-list (i32+)
                   :expect (i32.const 0))
                  (:name "1 argument case"
@@ -157,9 +161,32 @@
                  (:name "2 more argument case"
                   :test-list (i32+ a b 3)
                   :expect (i32.add a (i32.add b (i32.const 3))))
-                 (:name "i32-"
+                 (:name "i32- (no arg)"
+                  :test-list (i32-)
+                  :expect (i32.const 0))
+                 (:name "i32- (some args)"
                   :test-list (i32- a b 3)
-                  :expect (i32.sub a (i32.sub b (i32.const 3)))))))
+                  :expect (i32.sub a (i32.sub b (i32.const 3))))
+                 (:name "i32* (no arg)"
+                  :test-list (i32*)
+                  :expect (i32.const 1))
+                 (:name "i32* (some args)"
+                  :test-list (i32* a b 3)
+                  :expect (i32.mul a (i32.mul b (i32.const 3))))
+                 (:name "i32s/ (no arg)"
+                  :test-list (i32s/)
+                  :expect (i32.const 1))
+                 (:name "i32s/ (some args)"
+                  :test-list (i32s/ a b 3)
+                  :expect (i32.div-s a (i32.div-s b (i32.const 3))))
+                 (:name "i32u/ (no arg)"
+                  :test-list (i32u/)
+                  :expect (i32.const 1))
+                 (:name "i32u/ (some args)"
+                  :test-list (i32u/ a b 3)
+                  :expect (i32.div-u a (i32.div-u b (i32.const 3))))
+                 ;; i64
+                 )))
     (dolist (tt tests)
       (destructuring-bind (&key name test-list expect) tt
         (testing name

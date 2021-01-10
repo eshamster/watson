@@ -33,9 +33,30 @@
 
            ;; default macros
            #:for
+
            #:i32+
            #:i32-
+           #:i32*
+           #:i32s/
+           #:i32u/
 
+           #:i64+
+           #:i64-
+           #:i64*
+           #:i64s/
+           #:i64u/
+
+           #:f32+
+           #:f32-
+           #:f32*
+           #:f32/
+
+           #:f64+
+           #:f64-
+           #:f64*
+           #:f64/
+
+           ;; reserved words
            #:get-local
            #:set-local
            #:get-global
