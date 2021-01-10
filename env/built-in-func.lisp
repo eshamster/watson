@@ -3,13 +3,45 @@
   (:export #:built-in-func-p
            #:convert-built-in-func
 
+           ;; - memory instructions - ;;
+
+           #:i32.load
+           #:i32.load8-s
+           #:i32.load8-u
+           #:i32.load16-s
+           #:i32.load16-u
+           #:i32.store
+           #:i32.store8
+           #:i32.store16
+
+           #:i64.load
+           #:i64.load8-s
+           #:i64.load8-u
+           #:i64.load16-s
+           #:i64.load16-u
+           #:i64.load32-s
+           #:i64.load32-u
+           #:i64.store
+           #:i64.store8
+           #:i64.store16
+           #:i64.store32
+
+           #:f32.load
+           #:f32.store
+
+           #:f64.load
+           #:f64.store
+
+           #:memory.size
+           #:memory.grow
+
+           ;; - numeric instructions - ;;
+
            #:i32.const
            #:i64.const
            #:f32.const
            #:f64.const
 
-           #:i32.store
-           #:i32.load
            #:i32.clz
            #:i32.ctz
            #:i32.popcnt
@@ -186,6 +218,44 @@
                            ,(symbolicate type "." op)))
                     operations)))
 
+;; - Memory Instructions - ;;
+;; Cf. https://webassembly.github.io/spec/core/text/instructions.html#memory-instructions
+
+(def-type-operators i32
+    (load
+     load8-s
+     load8-u
+     load16-s
+     load16-u
+     store
+     store8
+     store16))
+
+(def-type-operators i64
+    (load
+     load8-s
+     load8-u
+     load16-s
+     load16-u
+     load32-s
+     load32-u
+     store
+     store8
+     store16
+     store32))
+
+(def-type-operators f32
+    (load
+     store))
+
+(def-type-operators f64
+    (load
+     store))
+
+(def-built-in-func memory.size)
+(def-built-in-func memory.grow)
+
+;; - Numeric Instructions - ;;
 ;; Cf. https://webassembly.github.io/spec/core/text/instructions.html#numeric-instructions
 
 ;; - const - ;;
@@ -195,7 +265,7 @@
 (def-type-operators f32 (const))
 (def-type-operators f64 (const))
 
-;; - basic operators - ;;
+;; - basic - ;;
 
 (def-type-operators i32
     (clz

@@ -45,13 +45,41 @@
            #:br-if
 
            ;; built-in functions
+           #:i32.load
+           #:i32.load8-s
+           #:i32.load8-u
+           #:i32.load16-s
+           #:i32.load16-u
+           #:i32.store
+           #:i32.store8
+           #:i32.store16
+
+           #:i64.load
+           #:i64.load8-s
+           #:i64.load8-u
+           #:i64.load16-s
+           #:i64.load16-u
+           #:i64.load32-s
+           #:i64.load32-u
+           #:i64.store
+           #:i64.store8
+           #:i64.store16
+           #:i64.store32
+
+           #:f32.load
+           #:f32.store
+
+           #:f64.load
+           #:f64.store
+
+           #:memory.size
+           #:memory.grow
+
            #:i32.const
            #:i64.const
            #:f32.const
            #:f64.const
 
-           #:i32.store
-           #:i32.load
            #:i32.clz
            #:i32.ctz
            #:i32.popcnt
