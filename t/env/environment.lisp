@@ -98,6 +98,20 @@
             (dolist (sym '(hoge1 hoge2))
               (ok (find sym syms)))))))))
 
+(deftest exclusive-wat-symbol-slots
+  (with-cloned-wenvironment
+    (let ((hoge (intern.wat 'hoge)))
+      ;; setf to function
+      (setf (wsymbol-function hoge)
+            (lambda () 1))
+      (ok (wsymbol-function hoge))
+      (ok (null (wsymbol-import hoge)))
+      ;; setf to import
+      (setf (wsymbol-import hoge)
+            (lambda () 1))
+      (ok (null (wsymbol-function hoge)))
+      (ok (wsymbol-import hoge)))))
+
 (deftest clone-wenvironment
   (let* ((*global-wat-env* (clone-wenvironment))
          (hoge (intern.wat 'hoge)))
