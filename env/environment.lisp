@@ -15,7 +15,8 @@
            #:wenv-import-body-generators
            #:wenv-var-symbols)
   (:import-from #:alexandria
-                #:hash-table-values))
+                #:hash-table-values
+                #:symbolicate))
 (in-package :watson/env/environment)
 
 ;; --- wat-symbol --- ;;
@@ -27,68 +28,49 @@
   macro-function
   var)
 
-(defun set-function-empty (wsymbol)
-  (when (wat-symbol-function wsymbol)
-    (warn "~A has been defined as WAT function"
-          (wat-symbol-symbol wsymbol)))
-  (setf (wat-symbol-function wsymbol) nil))
-
-(defun set-macro-function-empty (wsymbol)
-  (when (wat-symbol-macro-function wsymbol)
-    (warn "~A has been defined as WAT macro function"
-          (wat-symbol-symbol wsymbol)))
-  (setf (wat-symbol-macro-function wsymbol) nil))
-
-(defun set-import-empty (wsymbol)
-  (when (wat-symbol-import wsymbol)
-    (warn "~A has been defined as WAT import"
-          (wat-symbol-symbol wsymbol)))
-  (setf (wat-symbol-import wsymbol) nil))
-
-(defun set-var-empty (wsymbol)
-  (when (wat-symbol-var wsymbol)
-    (warn "~A has been defined as WAT var"
-          (wat-symbol-symbol wsymbol)))
-  (setf (wat-symbol-var wsymbol) nil))
+(defun clean-wat-symbol-slots (wsymbol without-warn-slot)
+  (macrolet ((clean (slot)
+               (let ((accessor (symbolicate "WAT-SYMBOL-" slot)))
+                 `(progn (when (,accessor wsymbol)
+                           (unless (eq ',slot without-warn-slot)
+                             (warn "~A has been defined as WAT ~A"
+                                   (wat-symbol-symbol wsymbol)
+                                   ',slot)))
+                         (setf (,accessor wsymbol) nil)))))
+    (clean import)
+    (clean function)
+    (clean macro-function)
+    (clean var)))
 
 (defun wsymbol-function (wsymbol)
   (wat-symbol-function wsymbol))
 
 (defsetf wsymbol-function (wsymbol) (func)
-  `(progn (setf (wat-symbol-function ,wsymbol) ,func)
-          (set-macro-function-empty ,wsymbol)
-          (set-import-empty ,wsymbol)
-          (set-var-empty ,wsymbol)
+  `(progn (clean-wat-symbol-slots ,wsymbol 'function)
+          (setf (wat-symbol-function ,wsymbol) ,func)
           ,wsymbol))
 
 (defun wsymbol-macro-function (wsymbol)
   (wat-symbol-macro-function wsymbol))
 
 (defsetf wsymbol-macro-function (wsymbol) (macro-func)
-  `(progn (set-function-empty ,wsymbol)
+  `(progn (clean-wat-symbol-slots ,wsymbol 'macro-function)
           (setf (wat-symbol-macro-function ,wsymbol) ,macro-func)
-          (set-import-empty ,wsymbol)
-          (set-var-empty ,wsymbol)
           ,wsymbol))
 
 (defun wsymbol-import (wsymbol)
   (wat-symbol-import wsymbol))
 
 (defsetf wsymbol-import (wsymbol) (import)
-  `(progn (set-function-empty ,wsymbol)
-          (set-macro-function-empty ,wsymbol)
+  `(progn (clean-wat-symbol-slots ,wsymbol 'import)
           (setf (wat-symbol-import ,wsymbol) ,import)
-          (set-var-empty ,wsymbol)
           ,wsymbol))
 
 (defun wsymbol-var (wsymbol)
   (wat-symbol-var wsymbol))
 
 (defsetf wsymbol-var (wsymbol) (var)
-  `(progn (set-function-empty ,wsymbol)
-          (set-macro-function-empty ,wsymbol)
-          (set-import-empty ,wsymbol)
-          (set-var-empty ,wsymbol)
+  `(progn (clean-wat-symbol-slots ,wsymbol 'var)
           (setf (wat-symbol-var ,wsymbol) ,var)
           ,wsymbol))
 
