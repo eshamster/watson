@@ -4,7 +4,7 @@
         #:watson/definer/global)
   (:import-from #:watson/env/environment
                 #:with-cloned-wenvironment
-                #:wsymbol-import
+                #:wsymbol-global
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:mut
@@ -27,6 +27,6 @@
         (with-cloned-wenvironment
           (testing name
             (funcall init)
-            (ok (equalp (funcall (wsymbol-import (intern.wat target-sym)))
+            (ok (equalp (funcall (wsymbol-global (intern.wat target-sym)))
                         expect))))))))
 

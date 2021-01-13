@@ -3,7 +3,8 @@
   (:export #:generate-wat-module)
   (:import-from #:watson/env/environment
                 #:wenv-import-body-generators
-                #:wenv-function-body-generators)
+                #:wenv-function-body-generators
+                #:wenv-global-body-generators)
   (:import-from #:watson/definer/export
                 #:get-export-body-generators)
   (:import-from #:watson/env/reserved-word
@@ -17,6 +18,7 @@
 (defun generate-wat-module% (packages)
   `(|module|
     ,@(mapcar #'funcall (mapcan #'wenv-import-body-generators packages))
+    ,@(mapcar #'funcall (mapcan #'wenv-global-body-generators packages))
     ,@(mapcar #'funcall (mapcan #'wenv-function-body-generators packages))
     ,@(mapcar #'funcall (mapcan #'get-export-body-generators packages))))
 

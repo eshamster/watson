@@ -4,6 +4,7 @@
            #:wsymbol-macro-function
            #:wsymbol-import
            #:wsymbol-var
+           #:wsymbol-global
            #:*global-wat-env*
            #:intern.wat
            #:clone-wenvironment
@@ -11,9 +12,11 @@
            #:wenv-function-symbols
            #:wenv-macro-function-symbols
            #:wenv-import-symbols
+           #:wenv-var-symbols
+           #:wenv-global-symbols
            #:wenv-function-body-generators
            #:wenv-import-body-generators
-           #:wenv-var-symbols)
+           #:wenv-global-body-generators)
   (:import-from #:alexandria
                 #:hash-table-values
                 #:symbolicate))
@@ -26,7 +29,8 @@
   import
   function
   macro-function
-  var)
+  var
+  global)
 
 (defun clean-wat-symbol-slots (wsymbol without-warn-slot)
   (macrolet ((clean (slot)
@@ -40,7 +44,8 @@
     (clean import)
     (clean function)
     (clean macro-function)
-    (clean var)))
+    (clean var)
+    (clean global)))
 
 (defun wsymbol-function (wsymbol)
   (wat-symbol-function wsymbol))
@@ -72,6 +77,14 @@
 (defsetf wsymbol-var (wsymbol) (var)
   `(progn (clean-wat-symbol-slots ,wsymbol 'var)
           (setf (wat-symbol-var ,wsymbol) ,var)
+          ,wsymbol))
+
+(defun wsymbol-global (wsymbol)
+  (wat-symbol-global wsymbol))
+
+(defsetf wsymbol-global (wsymbol) (global)
+  `(progn (clean-wat-symbol-slots ,wsymbol 'global)
+          (setf (wat-symbol-global ,wsymbol) ,global)
           ,wsymbol))
 
 ;; --- wat-environment --- ;;
@@ -126,6 +139,9 @@
 (defun wenv-var-symbols (&optional (wenv *global-wat-env*))
   (wenv-specified-symbols wenv #'wat-symbol-var))
 
+(defun wenv-global-symbols (&optional (wenv *global-wat-env*))
+  (wenv-specified-symbols wenv #'wat-symbol-global))
+
 ;; - body getter - ;;
 
 (defun wenv-function-body-generators (package &optional (wenv *global-wat-env*))
@@ -139,3 +155,9 @@
           (remove-if (lambda (wsym)
                        (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
                      (extract-wsymbols-by-accessor wenv #'wat-symbol-import))))
+
+(defun wenv-global-body-generators (package &optional (wenv *global-wat-env*))
+  (mapcar #'wat-symbol-global
+          (remove-if (lambda (wsym)
+                       (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
+                     (extract-wsymbols-by-accessor wenv #'wat-symbol-global))))

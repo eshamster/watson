@@ -2,7 +2,7 @@
   (:use #:cl)
   (:export #:defglobal.wat)
   (:import-from #:watson/env/environment
-                #:wsymbol-import
+                #:wsymbol-global
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|global|
@@ -20,7 +20,7 @@
 (defmacro defglobal.wat (name mod-nm globaltype)
   ;; Ex. (defglobal.wat g js.global (mut i32))
   ;;     -> (global $g (import "js" "global") (mut i32))
-  `(progn (setf (wsymbol-import (intern.wat ',name))
+  `(progn (setf (wsymbol-global (intern.wat ',name))
                 (lambda ()
                   (generate-global-body
                    ',name ',mod-nm ',globaltype)))))

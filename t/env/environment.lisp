@@ -98,6 +98,29 @@
             (dolist (sym '(hoge1 hoge2))
               (ok (find sym syms)))))))))
 
+(deftest global
+  (with-cloned-wenvironment
+    (let ((hoge1 (intern.wat 'hoge1)))
+      (testing "register and check"
+        (setf (wsymbol-global hoge1)
+              (lambda () 1))
+        (ok (eq (funcall (wsymbol-global hoge1))
+                1)))
+      (let ((hoge2 (intern.wat 'hoge2)))
+        (intern.wat 'hoge3) ; this won't be got
+        (setf (wsymbol-global hoge2)
+              (lambda () 2))
+        (testing "wenv-global-symbols"
+          (let ((syms (wenv-global-symbols)))
+            (ok (= (length syms) 2))
+            (dolist (sym '(hoge1 hoge2))
+              (ok (find sym syms)))))
+        (testing "wenv-global-body-generators"
+          (let ((funcs (wenv-global-body-generators *package*)))
+            (ok (= (length funcs) 2))
+            (dolist (func funcs)
+              (ok (find (funcall func) '(1 2))))))))))
+
 (deftest exclusive-wat-symbol-slots
   (with-cloned-wenvironment
     (let ((hoge (intern.wat 'hoge)))

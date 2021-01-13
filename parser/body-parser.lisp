@@ -14,6 +14,7 @@
                 #:wenv-function-symbols
                 #:wenv-import-symbols
                 #:wenv-var-symbols
+                #:wenv-global-symbols
                 #:wsymbol-macro-function)
   (:import-from #:watson/env/reserved-word
                 #:|call|
@@ -50,7 +51,8 @@
           (find sym syms))
         (list (wenv-var-symbols)
               (wenv-function-symbols)
-              (wenv-import-symbols))))
+              (wenv-import-symbols)
+              (wenv-global-symbols))))
 
 ;; --- parser --- ;;
 
