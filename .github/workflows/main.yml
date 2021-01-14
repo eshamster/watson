@@ -12,6 +12,6 @@ jobs:
       uses: actions/checkout@v2
     - name: Test step
       id: test
-      uses: eshamster/try-cl-test-on-gh-actions@v0.3.1
+      uses: eshamster/try-cl-test-on-gh-actions@v0.3.2
       with:
         lisp: '${{ matrix.lisp }}'
