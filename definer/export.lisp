@@ -1,7 +1,9 @@
 (defpackage :watson/definer/export
   (:use #:cl)
-  (:export #:defexport.wat
-           #:get-export-body-generators)
+  (:export #:defexport.wat)
+  (:import-from #:watson/env/environment
+                #:wsymbol-export
+                #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|export|
                 #:|func|
@@ -16,21 +18,15 @@
 
 ;; https://webassembly.github.io/spec/core/text/modules.html#exports
 
-(defvar *exports* (make-hash-table))
-
-(defun get-export-body-generators (package)
-  (mapcar (lambda (sym)
-            (gethash sym *exports*))
-          (remove-if (lambda (sym)
-                       (not (eq package (symbol-package sym))))
-                     (hash-table-keys *exports*))))
-
 (defmacro defexport.wat (js-func-name export-desc)
   ;; Ex. (defexport.wat js-func-name (func foo))
   ;;     -> (export "js_func_name" (func $foo))
-  `(setf (gethash ',js-func-name *exports*)
+  `(setf (wsymbol-export (intern.wat ',(get-export-target export-desc)))
          (lambda ()
            (generate-export-body ',js-func-name ',export-desc))))
+
+(defun get-export-target (export-desc)
+  (cadr export-desc))
 
 (defun generate-export-body (js-func-name export-desc)
   `(|export|

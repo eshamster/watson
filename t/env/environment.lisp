@@ -121,6 +121,24 @@
             (dolist (func funcs)
               (ok (find (funcall func) '(1 2))))))))))
 
+(deftest export
+  (with-cloned-wenvironment
+    (let ((hoge1 (intern.wat 'hoge1)))
+      (testing "register and check"
+        (setf (wsymbol-export hoge1)
+              (lambda () 1))
+        (ok (eq (funcall (wsymbol-export hoge1))
+                1)))
+      (let ((hoge2 (intern.wat 'hoge2)))
+        (intern.wat 'hoge3) ; this won't be got
+        (setf (wsymbol-export hoge2)
+              (lambda () 2))
+        (testing "wenv-export-body-generators"
+          (let ((funcs (wenv-export-body-generators *package*)))
+            (ok (= (length funcs) 2))
+            (dolist (func funcs)
+              (ok (find (funcall func) '(1 2))))))))))
+
 (deftest exclusive-wat-symbol-slots
   (with-cloned-wenvironment
     (let ((hoge (intern.wat 'hoge)))
@@ -133,7 +151,12 @@
       (setf (wsymbol-import hoge)
             (lambda () 1))
       (ok (null (wsymbol-function hoge)))
-      (ok (wsymbol-import hoge)))))
+      (ok (wsymbol-import hoge))
+      ;; setf to export (export is exceptionally not exclusive)
+      (setf (wsymbol-export hoge)
+            (lambda () 1))
+      (ok (wsymbol-import hoge))
+      (ok (wsymbol-export hoge)))))
 
 (deftest clone-wenvironment
   (let* ((*global-wat-env* (clone-wenvironment))

@@ -5,6 +5,7 @@
            #:wsymbol-import
            #:wsymbol-var
            #:wsymbol-global
+           #:wsymbol-export
            #:*global-wat-env*
            #:intern.wat
            #:clone-wenvironment
@@ -16,7 +17,8 @@
            #:wenv-global-symbols
            #:wenv-function-body-generators
            #:wenv-import-body-generators
-           #:wenv-global-body-generators)
+           #:wenv-global-body-generators
+           #:wenv-export-body-generators)
   (:import-from #:alexandria
                 #:hash-table-values
                 #:symbolicate))
@@ -25,12 +27,16 @@
 ;; --- wat-symbol --- ;;
 
 (defstruct wat-symbol
+  ;; Use symbol as an identifier
   symbol
+  ;; The following slots are exclusive
   import
   function
   macro-function
   var
-  global)
+  global
+  ;; The following slot is independent from other slots
+  export)
 
 (defun clean-wat-symbol-slots (wsymbol without-warn-slot)
   (macrolet ((clean (slot)
@@ -85,6 +91,13 @@
 (defsetf wsymbol-global (wsymbol) (global)
   `(progn (clean-wat-symbol-slots ,wsymbol 'global)
           (setf (wat-symbol-global ,wsymbol) ,global)
+          ,wsymbol))
+
+(defun wsymbol-export (wsymbol)
+  (wat-symbol-export wsymbol))
+
+(defsetf wsymbol-export (wsymbol) (export)
+  `(progn (setf (wat-symbol-export ,wsymbol) ,export)
           ,wsymbol))
 
 ;; --- wat-environment --- ;;
@@ -161,3 +174,9 @@
           (remove-if (lambda (wsym)
                        (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
                      (extract-wsymbols-by-accessor wenv #'wat-symbol-global))))
+
+(defun wenv-export-body-generators (package &optional (wenv *global-wat-env*))
+  (mapcar #'wat-symbol-export
+          (remove-if (lambda (wsym)
+                       (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
+                     (extract-wsymbols-by-accessor wenv #'wat-symbol-export))))

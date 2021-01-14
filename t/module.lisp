@@ -19,14 +19,9 @@
                 #:i32))
 (in-package :watson/t/module)
 
-(defmacro with-test-env (&body body)
-  `(let ((watson/definer/export::*exports* (make-hash-table)))
-     (with-cloned-wenvironment
-       ,@body)))
-
 (deftest generate-wat-module
   (testing "count elements"
-    (with-test-env
+    (with-cloned-wenvironment
       ;; define
       (defun.wat fn1 () ())
       (defun.wat fn2 () ())
@@ -48,7 +43,7 @@
           (ok (= (count-target "import") 4))
           (ok (= (count-target "global") 1))
           (ok (= (count-target "export") 2))))))
-  (with-test-env
+  (with-cloned-wenvironment
     ;; define
     (defun.wat fn () ())
     (defimport.wat import a.b (func ()))

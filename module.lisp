@@ -4,9 +4,8 @@
   (:import-from #:watson/env/environment
                 #:wenv-import-body-generators
                 #:wenv-function-body-generators
-                #:wenv-global-body-generators)
-  (:import-from #:watson/definer/export
-                #:get-export-body-generators)
+                #:wenv-global-body-generators
+                #:wenv-export-body-generators)
   (:import-from #:watson/env/reserved-word
                 #:|module|)
   (:import-from #:watson/util/list
@@ -20,7 +19,7 @@
     ,@(mapcar #'funcall (mapcan #'wenv-import-body-generators packages))
     ,@(mapcar #'funcall (mapcan #'wenv-global-body-generators packages))
     ,@(mapcar #'funcall (mapcan #'wenv-function-body-generators packages))
-    ,@(mapcar #'funcall (mapcan #'get-export-body-generators packages))))
+    ,@(mapcar #'funcall (mapcan #'wenv-export-body-generators packages))))
 
 (defun generate-wat-module (&rest base-packages)
   "Generate list that can be output by \"princ\" as WAT.

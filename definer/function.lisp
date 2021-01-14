@@ -6,9 +6,7 @@
                 #:parse-body)
   (:import-from #:watson/env/environment
                 #:wsymbol-function
-                #:intern.wat
-                #:wenv-function-symbols
-                #:wenv-import-symbols)
+                #:intern.wat)
   (:import-from #:watson/parser/type
                 #:convert-type
                 #:parse-typeuse)
