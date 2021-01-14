@@ -117,6 +117,13 @@ The result is the following (formatted by hand).
 
 ## Installation
 
+## TODO
+
+- Implement WebAssembly tables
+    - https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format#webassembly_tables
+- Separate namespace by package
+- etc...
+
 ## Author
 
 - eshamster (hamgoostar@gmail.com)
