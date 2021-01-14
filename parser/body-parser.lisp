@@ -8,6 +8,7 @@
                 #:macroexpand.wat)
   (:import-from #:watson/env/environment
                 #:wsymbol-var
+                #:wsymbol-global
                 #:intern.wat
                 #:clone-wenvironment
                 #:with-cloned-wenvironment
@@ -142,9 +143,13 @@
 ;; - function call arg - ;;
 
 (defun parse-call-arg (arg)
-  (if (and (atom arg)
-           (var-p arg))
-      (parse-form `(get-local ,arg))
+  (if (atom arg)
+      (let ((wsymbol (intern.wat arg)))
+        (cond ((wsymbol-var wsymbol)
+               (parse-form `(get-local ,arg)))
+              ((wsymbol-global wsymbol)
+               (parse-form `(get-global ,arg)))
+              (t "expect local or global variable but ~A is neither" arg)))
       (parse-form arg)))
 
 ;; - built-in function form - ;;

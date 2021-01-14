@@ -8,6 +8,7 @@
   (:import-from #:watson/env/environment
                 #:with-cloned-wenvironment
                 #:wsymbol-function
+                #:wsymbol-global
                 #:wsymbol-macro-function
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
@@ -190,7 +191,16 @@
                                  (lambda () 1)))
                   :input (:body (hoge a b)
                           :args (a b))
-                  :expect (|call| $hoge (|get_local| $a) (|get_local| $b))))))
+                  :expect (|call| $hoge (|get_local| $a) (|get_local| $b)))
+                 (:name "get-global is inserted"
+                  :init ,(lambda ()
+                           (setf (wsymbol-function (intern.wat 'hoge))
+                                 (lambda () 1))
+                           (setf (wsymbol-global (intern.wat 'g))
+                                 (lambda () 2)))
+                  :input (:body (hoge a g)
+                          :args (a))
+                  :expect (|call| $hoge (|get_local| $a) (|get_global| $g))))))
     (dolist (tt tests)
       (with-cloned-wenvironment
         (destructuring-bind (&key name init input expect) tt
