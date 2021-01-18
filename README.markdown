@@ -1,4 +1,5 @@
 ![.github/workflows/main.yml](https://github.com/eshamster/watson/workflows/.github/workflows/main.yml/badge.svg)
+[![Quicklisp](http://quickdocs.org/badge/watson.svg)](http://quickdocs.org/watson/)
 
 # watson
 
@@ -116,6 +117,10 @@ The result is the following (formatted by hand).
 ```
 
 ## Installation
+
+```lisp
+> (ql:quickload :watson)
+```
 
 ## TODO
 
