@@ -16,12 +16,16 @@
 (defun parse-typeuse (typeuse)
   ;; ((param...) (result-type...))
   ;; Ex. (((a i32) (b i32)) (i32))
+  ;;  -> return 1. ((|param| a i32) (|param| b i32) (|result| i32))
+  ;;            2. (a b)
+  ;;            3. (i32 i32)
   (let ((params (car typeuse))
         (results (cadr typeuse)))
     ;; Return parsed list and arg name list
     (values (append (mapcar #'parse-param params)
                     (mapcar #'parse-result-type results))
-            (extract-arg-names params))))
+            (extract-arg-names params)
+            (extract-arg-types params))))
 
 (defun parse-param (param)
   (ecase (length param)
@@ -34,6 +38,9 @@
           (remove-if (lambda (param)
                        (< (length param) 2))
                      params)))
+
+(defun extract-arg-types (params)
+  (mapcar #'car (mapcar #'last params)))
 
 (defun parse-result-type (result-type)
   `(|result| ,(convert-type result-type)))

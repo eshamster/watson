@@ -6,6 +6,7 @@
                 #:parse-body)
   (:import-from #:watson/env/environment
                 #:wsymbol-function
+                #:make-wat-function
                 #:intern.wat)
   (:import-from #:watson/parser/type
                 #:convert-type
@@ -18,19 +19,21 @@
 
 (defmacro defun.wat (name args result &body body)
   `(progn (setf (wsymbol-function (intern.wat ',name))
-                (lambda ()
-                  (generate-defun ',name ',args ',result ',body)))
+                (generate-defun ',name ',args ',result ',body))
           ,(unless (eq (symbol-package name)
                        (find-package "CL"))
              (defun-empty% name args))))
 
 (defun generate-defun (name args result body)
-  (multiple-value-bind (parsed-typeuse vars)
+  (multiple-value-bind (parsed-typeuse vars types)
       (parse-typeuse (list args result))
-    `(|func|
-      ,(parse-var-name name)
-      ,@parsed-typeuse
-      ,@(parse-body body vars))))
+    (make-wat-function
+     :generator (lambda ()
+                  `(|func|
+                    ,(parse-var-name name)
+                    ,@parsed-typeuse
+                    ,@(parse-body body vars)))
+     :arg-types types)))
 
 (defun defun-empty% (name args)
   (let ((args-var (mapcar #'car args)))

@@ -40,13 +40,12 @@
     (let ((hoge1 (intern.wat 'hoge1)))
       (testing "register and check"
         (setf (wsymbol-function hoge1)
-              (lambda () 1))
-        (ok (eq (funcall (wsymbol-function hoge1))
-                1)))
+              (make-wat-function :generator (lambda () 1)))
+        (ok (wsymbol-function hoge1)))
       (let ((hoge2 (intern.wat 'hoge2)))
         (intern.wat 'hoge3) ; this won't be got
         (setf (wsymbol-function hoge2)
-              (lambda () 2))
+              (make-wat-function :generator (lambda () 2)))
         (testing "wenv-function-symbols"
           (let ((syms (wenv-function-symbols)))
             (ok (= (length syms) 2))
@@ -144,7 +143,7 @@
     (let ((hoge (intern.wat 'hoge)))
       ;; setf to function
       (setf (wsymbol-function hoge)
-            (lambda () 1))
+            (make-wat-function))
       (ok (wsymbol-function hoge))
       (ok (null (wsymbol-import hoge)))
       ;; setf to import
@@ -160,44 +159,40 @@
 
 (deftest clone-wenvironment
   (let* ((*global-wat-env* (clone-wenvironment))
-         (hoge (intern.wat 'hoge)))
+         (hoge (intern.wat 'hoge))
+         (wfunc1 (make-wat-function)))
     (testing "outer: before"
       (setf (wsymbol-function hoge)
-            (lambda () 100))
-      (ok (eq (funcall (wsymbol-function hoge))
-              100)))
+            wfunc1)
+      (ok (eq (wsymbol-function hoge) wfunc1)))
     (let* ((*global-wat-env* (clone-wenvironment))
-           (hoge (intern.wat 'hoge)))
+           (hoge (intern.wat 'hoge))
+           (wfunc2 (make-wat-function)))
       (testing "inner: before"
-        (ok (eq (funcall (wsymbol-function hoge))
-                100)))
+        (ok (eq (wsymbol-function hoge) wfunc1)))
       (testing "inner: after"
         (setf (wsymbol-function hoge)
-              (lambda () 200))
-        (ok (eq (funcall (wsymbol-function hoge))
-                200))))
+              wfunc2)
+        (ok (eq (wsymbol-function hoge) wfunc2))))
     (testing "outer: after"
-      (ok (eq (funcall (wsymbol-function hoge))
-              100)))))
+      (ok (eq (wsymbol-function hoge) wfunc1)))))
 
 (deftest with-cloned-wenvironment
   (with-cloned-wenvironment
-    (let ((hoge (intern.wat 'hoge)))
+    (let ((hoge (intern.wat 'hoge))
+          (wfunc1 (make-wat-function)))
       (testing "outer: before"
         (setf (wsymbol-function hoge)
-              (lambda () 100))
-        (ok (eq (funcall (wsymbol-function hoge))
-                100)))
+              wfunc1)
+        (ok (eq (wsymbol-function hoge) wfunc1)))
       (with-cloned-wenvironment
-        (let ((hoge (intern.wat 'hoge)))
+        (let ((hoge (intern.wat 'hoge))
+              (wfunc2 (make-wat-function)))
           (testing "inner: before"
-            (ok (eq (funcall (wsymbol-function hoge))
-                    100)))
+            (ok (eq (wsymbol-function hoge) wfunc1)))
           (testing "inner: after"
             (setf (wsymbol-function hoge)
-                  (lambda () 200))
-            (ok (eq (funcall (wsymbol-function hoge))
-                    200)))))
+                  wfunc2)
+            (ok (eq (wsymbol-function hoge) wfunc2)))))
       (testing "outer: after"
-        (ok (eq (funcall (wsymbol-function hoge))
-                100))))))
+        (ok (eq (wsymbol-function hoge) wfunc1))))))

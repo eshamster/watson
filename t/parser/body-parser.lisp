@@ -10,6 +10,7 @@
                 #:wsymbol-function
                 #:wsymbol-global
                 #:wsymbol-macro-function
+                #:make-wat-function
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|call|
@@ -44,7 +45,7 @@
                  (:name "parse func symbol"
                   :init ,(lambda ()
                            (setf (wsymbol-function (intern.wat 'hoge))
-                                 (lambda () 1)))
+                                 (make-wat-function)))
                   :input (:body hoge
                           :args (a b))
                   :expect $hoge)
@@ -181,21 +182,21 @@
   (let ((tests `((:name "parse normal case"
                   :init ,(lambda ()
                            (setf (wsymbol-function (intern.wat 'hoge))
-                                 (lambda () 1)))
+                                 (make-wat-function)))
                   :input (:body (hoge (get-local a) (get-local b))
                           :args (a b))
                   :expect (|call| $hoge (|get_local| $a) (|get_local| $b)))
                  (:name "get-local is inserted"
                   :init ,(lambda ()
                            (setf (wsymbol-function (intern.wat 'hoge))
-                                 (lambda () 1)))
+                                 (make-wat-function)))
                   :input (:body (hoge a b)
                           :args (a b))
                   :expect (|call| $hoge (|get_local| $a) (|get_local| $b)))
                  (:name "get-global is inserted"
                   :init ,(lambda ()
                            (setf (wsymbol-function (intern.wat 'hoge))
-                                 (lambda () 1))
+                                 (make-wat-function))
                            (setf (wsymbol-global (intern.wat 'g))
                                  (lambda () 2)))
                   :input (:body (hoge a g)

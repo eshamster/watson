@@ -5,6 +5,7 @@
   (:import-from #:watson/env/environment
                 #:with-cloned-wenvironment
                 #:wsymbol-function
+                #:wenv-function-body-generators
                 #:intern.wat)
   (:import-from #:watson/env/built-in-func
                 #:i32.add)
@@ -24,16 +25,17 @@
                     :init ,(lambda ()
                              (defun.wat hoge ((a i32) (b i32)) (i32)
                                (i32.add a b)))
-                    :target-sym hoge
                     :expect (|func| $hoge
                                     (|param| $a |i32|) (|param| $b |i32|)
                                     (|result| |i32|)
                                     (,i32.add (|get_local| $a) (|get_local| $b)))))))
       (dolist (tt tests)
-        (destructuring-bind (&key name init target-sym expect) tt
+        (destructuring-bind (&key name init expect) tt
           (with-cloned-wenvironment
             (testing name
               (funcall init)
-              (ok (equalp (funcall (wsymbol-function (intern.wat target-sym)))
-                          expect)))))))))
+              (let ((funcs (wenv-function-body-generators *package*)))
+                (ok (= (length funcs) 1))
+                (ok (equalp (funcall (car funcs))
+                            expect))))))))))
 
