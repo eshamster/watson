@@ -3,7 +3,8 @@
   (:export #:parse-body)
   (:import-from #:watson/env/built-in-func
                 #:built-in-func-p
-                #:convert-built-in-func)
+                #:convert-built-in-func
+                #:get-arg-types-for-built-in-func)
   (:import-from #:watson/env/const-func
                 #:i32.const
                 #:i64.const
@@ -193,8 +194,11 @@
 ;; - built-in function form - ;;
 
 (defun parse-built-in-func-form (form)
-  `(,(convert-built-in-func (car form))
-    ,@(parse-call-args (cdr form) nil)))
+  (let* ((sym (car form))
+         (args (cdr form))
+         (arg-types (get-arg-types-for-built-in-func sym args)))
+    `(,(convert-built-in-func sym)
+      ,@(parse-call-args args arg-types))))
 
 (defun built-in-func-form-p (form)
   (built-in-func-p (car form)))

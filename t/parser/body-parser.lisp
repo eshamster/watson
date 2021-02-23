@@ -152,7 +152,12 @@
                    (:name "get-local is inserted"
                     :input (:body (i32.add a b)
                             :args (a b))
-                    :expect (,|i32.add| (|get_local| $a) (|get_local| $b))))))
+                    :expect (,|i32.add| (|get_local| $a) (|get_local| $b)))
+                   (:name "<type>.const is inserted"
+                    :input (:body (i32.add 1 (i32.const 2))
+                            :args ())
+                    :expect (,|i32.add| (,(convert-const-func 'i32.const) 1)
+                                        (,(convert-const-func 'i32.const) 2))))))
       (dolist (tt tests)
         (with-cloned-wenvironment
           (destructuring-bind (&key name input expect) tt

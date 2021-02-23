@@ -2,6 +2,7 @@
   (:use #:cl)
   (:export #:built-in-func-p
            #:convert-built-in-func
+           #:get-arg-types-for-built-in-func
 
            ;; - memory instructions - ;;
 
@@ -185,6 +186,11 @@
            #:i64.extend8-s
            #:i64.extend16-s
            #:i64.extend32-s)
+  (:import-from #:watson/env/type
+                #:i32
+                #:i64
+                #:f32
+                #:f64)
   (:import-from #:watson/util/symbol
                 #:sym-to-sym-for-print)
   (:import-from #:alexandria
@@ -196,23 +202,49 @@
 (defun built-in-func-p (sym)
   (gethash sym *built-in-funcs*))
 
+(defstruct (built-in-func (:predicate bfunc-p))
+  sym
+  sym-for-print)
+
 (defun convert-built-in-func (sym)
-  (assert (built-in-func-p sym) nil
-          "~A is not a build-in-func" sym)
-  (gethash sym *built-in-funcs*))
+  (multiple-value-bind (got ok)
+      (gethash sym *built-in-funcs*)
+    (unless ok
+      (error "~A is not a built-in-func" sym))
+    (built-in-func-sym-for-print got)))
 
 (defmacro def-built-in-func (sym &optional sym-for-print)
   `(progn (defvar ,sym nil)
           (setf (gethash ',sym *built-in-funcs*)
-                ',(if sym-for-print
-                      sym-for-print
-                      (sym-to-sym-for-print sym)))))
+                (make-built-in-func
+                 :sym ',sym
+                 :sym-for-print ',(if sym-for-print
+                                      sym-for-print
+                                      (sym-to-sym-for-print sym))))))
+
+(defstruct (type-operator (:include built-in-func))
+  type)
 
 (defmacro def-type-operators (type operations)
   `(progn ,@(mapcar (lambda (op)
-                      `(def-built-in-func
-                           ,(symbolicate type "." op)))
+                      (let ((sym (symbolicate type "." op)))
+                        `(progn (defvar ,sym nil)
+                                (setf (gethash ',sym *built-in-funcs*)
+                                      (make-type-operator
+                                       :sym ',sym
+                                       :sym-for-print ',(sym-to-sym-for-print sym)
+                                       :type ',type)))))
                     operations)))
+
+(defun get-arg-types-for-built-in-func (sym args)
+  (multiple-value-bind (got ok)
+      (gethash sym *built-in-funcs*)
+    (unless ok
+      (error "~A is not a built-in-func" sym))
+    (if (typep got 'type-operator)
+        (let ((type (type-operator-type got)))
+          (loop :for x :from 0 :below (length args) :collect type))
+        nil)))
 
 ;; - Memory Instructions - ;;
 ;; Cf. https://webassembly.github.io/spec/core/text/instructions.html#memory-instructions
