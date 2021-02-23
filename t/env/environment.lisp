@@ -14,16 +14,15 @@
 
 (deftest import
   (with-cloned-wenvironment
-    (let ((hoge1 (intern.wat 'hoge1)))
+    (let ((hoge1 (intern.wat 'hoge1))
+          (imp1 (make-wat-import)))
       (testing "register and check"
-        (setf (wsymbol-import hoge1)
-              (lambda () 1))
-        (ok (eq (funcall (wsymbol-import hoge1))
-                1)))
-      (let ((hoge2 (intern.wat 'hoge2)))
+        (setf (wsymbol-import hoge1) imp1)
+        (ok (eq (wsymbol-import hoge1) imp1)))
+      (let ((hoge2 (intern.wat 'hoge2))
+            (imp2 (make-wat-import)))
         (intern.wat 'hoge3) ; this won't be got
-        (setf (wsymbol-import hoge2)
-              (lambda () 2))
+        (setf (wsymbol-import hoge2) imp2)
         (testing "wenv-import-symbols"
           (let ((syms (wenv-import-symbols)))
             (ok (= (length syms) 2))
@@ -31,9 +30,7 @@
               (ok (find sym syms)))))
         (testing "wenv-import-body-generators"
           (let ((funcs (wenv-import-body-generators *package*)))
-            (ok (= (length funcs) 2))
-            (dolist (func funcs)
-              (ok (find (funcall func) '(1 2))))))))))
+            (ok (= (length funcs) 2))))))))
 
 (deftest function
   (with-cloned-wenvironment
@@ -148,7 +145,7 @@
       (ok (null (wsymbol-import hoge)))
       ;; setf to import
       (setf (wsymbol-import hoge)
-            (lambda () 1))
+            (make-wat-import))
       (ok (null (wsymbol-function hoge)))
       (ok (wsymbol-import hoge))
       ;; setf to export (export is exceptionally not exclusive)

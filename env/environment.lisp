@@ -6,8 +6,12 @@
            #:wsymbol-var
            #:wsymbol-global
            #:wsymbol-export
+
            #:make-wat-function
            #:wat-function-arg-types
+           #:make-wat-import
+           #:wat-import-arg-types
+
            #:*global-wat-env*
            #:intern.wat
            #:clone-wenvironment
@@ -42,6 +46,10 @@
   export)
 
 (defstruct wat-function
+  generator
+  arg-types)
+
+(defstruct wat-import
   generator
   arg-types)
 
@@ -83,7 +91,9 @@
   (wat-symbol-import wsymbol))
 
 (defsetf wsymbol-import (wsymbol) (import)
-  `(progn (clean-wat-symbol-slots ,wsymbol 'import)
+  `(progn (when ,import
+            (check-type ,import wat-import))
+          (clean-wat-symbol-slots ,wsymbol 'import)
           (setf (wat-symbol-import ,wsymbol) ,import)
           ,wsymbol))
 
@@ -175,7 +185,8 @@
                      (extract-wsymbols-by-accessor wenv #'wat-symbol-function))))
 
 (defun wenv-import-body-generators (package &optional (wenv *global-wat-env*))
-  (mapcar #'wat-symbol-import
+  (mapcar (lambda (wsym)
+            (wat-import-generator (wat-symbol-import wsym)))
           (remove-if (lambda (wsym)
                        (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
                      (extract-wsymbols-by-accessor wenv #'wat-symbol-import))))

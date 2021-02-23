@@ -19,7 +19,9 @@
                 #:wsymbol-var
                 #:wsymbol-global
                 #:wsymbol-function
+                #:wsymbol-import
                 #:wat-function-arg-types
+                #:wat-import-arg-types
                 #:intern.wat
                 #:clone-wenvironment
                 #:with-cloned-wenvironment
@@ -207,10 +209,15 @@
 
 (defun parse-function-call-form (form)
   (destructuring-bind (func &rest args) form
-    (let* ((wfunc (wsymbol-function (intern.wat (car form))))
-           (arg-types (if wfunc (wat-function-arg-types wfunc) nil)))
-      `(|call| ,(parse-atom func)
-               ,@(parse-call-args args arg-types)))))
+    `(|call| ,(parse-atom func)
+             ,@(parse-call-args args (get-function-call-arg-types form)))))
+
+(defun get-function-call-arg-types (form)
+  (let* ((wsym (intern.wat (car form)))
+         (wfunc (wsymbol-function wsym))
+         (wimport (wsymbol-import wsym)))
+    (cond (wfunc (wat-function-arg-types wfunc))
+          (wimport (wat-import-arg-types wimport)))))
 
 (defun function-call-form-p (form)
   (let ((sym (car form)))

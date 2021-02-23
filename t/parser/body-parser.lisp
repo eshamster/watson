@@ -15,7 +15,9 @@
                 #:wsymbol-function
                 #:wsymbol-global
                 #:wsymbol-macro-function
+                #:wsymbol-import
                 #:make-wat-function
+                #:make-wat-import
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|call|
@@ -213,10 +215,20 @@
                   :input (:body (hoge a g)
                           :args (a))
                   :expect (|call| $hoge (|get_local| $a) (|get_global| $g)))
-                 (:name "<type>.const is inserted"
+                 (:name "<type>.const is inserted (user defined function)"
                   :init ,(lambda ()
                            (setf (wsymbol-function (intern.wat 'hoge))
                                  (make-wat-function :arg-types '(i32 i64 i32))))
+                  :input (:body (hoge 1 2 (i32.const 3))
+                          :args ())
+                  :expect (|call| $hoge
+                                  (,(convert-const-func 'i32.const) 1)
+                                  (,(convert-const-func 'i64.const) 2)
+                                  (,(convert-const-func 'i32.const) 3)))
+                 (:name "<type>.const is inserted (imported function)"
+                  :init ,(lambda ()
+                           (setf (wsymbol-import (intern.wat 'hoge))
+                                 (make-wat-import :arg-types '(i32 i64 i32))))
                   :input (:body (hoge 1 2 (i32.const 3))
                           :args ())
                   :expect (|call| $hoge

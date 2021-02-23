@@ -3,6 +3,7 @@
   (:export #:defimport.wat)
   (:import-from #:watson/env/environment
                 #:wsymbol-import
+                #:make-wat-import
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|import|
@@ -24,15 +25,19 @@
 (defmacro defimport.wat (name mod-nm import-desc)
   ;; Ex. (defimport.wat lg console.log (func ((i32))))
   ;;     -> (import "console" "log" (func $lg (param i32)))
-  `(progn (setf (wsymbol-import (intern.wat ',name))
-                (lambda ()
-                  (generate-import-body
-                   ',name ',mod-nm ',import-desc)))))
+  `(setf (wsymbol-import (intern.wat ',name))
+         (generate-import-body
+          ',name ',mod-nm ',import-desc)))
 
 (defun generate-import-body (name mod-nm parsed-import-desc)
-  `(|import|
-    ,@(parse-mod-nm mod-nm)
-    ,(parse-import-desc name parsed-import-desc)))
+  (multiple-value-bind (import-desc types)
+      (parse-import-desc name parsed-import-desc)
+    (make-wat-import
+     :generator (lambda ()
+                  `(|import|
+                    ,@(parse-mod-nm mod-nm)
+                    ,import-desc))
+     :arg-types types)))
 
 (defun parse-import-desc (name import-desc)
   ;; TODO: should process 'table'
@@ -45,8 +50,12 @@
 (defun parse-import-func-desc (name params)
   ;; Ex. name: foo, params: (((a i32) (b i32)) (i32))
   ;;     -> (func $foo (param $a i32) (param $b i32) (result $i32))
-  `(|func| ,(parse-var-name name)
-           ,@(parse-typeuse params)))
+  (multiple-value-bind (typeuse variables types)
+      (parse-typeuse params)
+    (declare (ignore variables))
+    (values `(|func| ,(parse-var-name name)
+                     ,@typeuse)
+            types)))
 
 (defun parse-import-memory-desc (name params)
   ;; Ex. name: foo, params: (1)

@@ -16,9 +16,9 @@
 (defun parse-typeuse (typeuse)
   ;; ((param...) (result-type...))
   ;; Ex. (((a i32) (b i32)) (i32))
-  ;;  -> return 1. ((|param| a i32) (|param| b i32) (|result| i32))
-  ;;            2. (a b)
-  ;;            3. (i32 i32)
+  ;;  -> return 1. typeuse:   ((|param| a i32) (|param| b i32) (|result| i32))
+  ;;            2. variables: (a b)
+  ;;            3. types:     (i32 i32)
   (let ((params (car typeuse))
         (results (cadr typeuse)))
     ;; Return parsed list and arg name list
