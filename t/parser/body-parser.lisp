@@ -4,7 +4,12 @@
         #:watson/parser/body-parser
         #:watson/default/macro)
   (:import-from #:watson/env/built-in-func
-                #:i32.add)
+                #:i32.add
+                #:convert-built-in-func)
+  (:import-from #:watson/env/const-func
+                #:i32.const
+                #:i64.const
+                #:convert-const-func)
   (:import-from #:watson/env/environment
                 #:with-cloned-wenvironment
                 #:wsymbol-function
@@ -34,7 +39,8 @@
                 #:|br_if|)
   (:import-from #:watson/env/type
                 #:i32
-                #:|i32|))
+                #:|i32|
+                #:i64))
 (in-package :watson/t/parser/body-parser)
 
 (deftest parse-atom
@@ -201,7 +207,17 @@
                                  (lambda () 2)))
                   :input (:body (hoge a g)
                           :args (a))
-                  :expect (|call| $hoge (|get_local| $a) (|get_global| $g))))))
+                  :expect (|call| $hoge (|get_local| $a) (|get_global| $g)))
+                 (:name "<type>.const is inserted"
+                  :init ,(lambda ()
+                           (setf (wsymbol-function (intern.wat 'hoge))
+                                 (make-wat-function :arg-types '(i32 i64 i32))))
+                  :input (:body (hoge 1 2 (i32.const 3))
+                          :args ())
+                  :expect (|call| $hoge
+                                  (,(convert-const-func 'i32.const) 1)
+                                  (,(convert-const-func 'i64.const) 2)
+                                  (,(convert-const-func 'i32.const) 3))))))
     (dolist (tt tests)
       (with-cloned-wenvironment
         (destructuring-bind (&key name init input expect) tt

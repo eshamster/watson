@@ -7,6 +7,7 @@
            #:wsymbol-global
            #:wsymbol-export
            #:make-wat-function
+           #:wat-function-arg-types
            #:*global-wat-env*
            #:intern.wat
            #:clone-wenvironment

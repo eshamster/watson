@@ -3,12 +3,13 @@
         #:rove
         #:watson/default/macro)
   (:import-from #:watson/env/built-in-func
-                #:i32.const
                 #:i32.add
                 #:i32.sub
                 #:i32.mul
                 #:i32.div-s
                 #:i32.div-u)
+  (:import-from #:watson/env/const-func
+                #:i32.const)
   (:import-from #:watson/env/reserved-word
                 #:|if|
                 #:|then|

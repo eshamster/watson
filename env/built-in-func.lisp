@@ -37,11 +37,6 @@
 
            ;; - numeric instructions - ;;
 
-           #:i32.const
-           #:i64.const
-           #:f32.const
-           #:f64.const
-
            #:i32.clz
            #:i32.ctz
            #:i32.popcnt
@@ -202,7 +197,8 @@
   (gethash sym *built-in-funcs*))
 
 (defun convert-built-in-func (sym)
-  (assert (built-in-func-p sym))
+  (assert (built-in-func-p sym) nil
+          "~A is not a build-in-func" sym)
   (gethash sym *built-in-funcs*))
 
 (defmacro def-built-in-func (sym &optional sym-for-print)
@@ -257,13 +253,6 @@
 
 ;; - Numeric Instructions - ;;
 ;; Cf. https://webassembly.github.io/spec/core/text/instructions.html#numeric-instructions
-
-;; - const - ;;
-
-(def-type-operators i32 (const))
-(def-type-operators i64 (const))
-(def-type-operators f32 (const))
-(def-type-operators f64 (const))
 
 ;; - basic - ;;
 

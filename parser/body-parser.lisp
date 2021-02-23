@@ -4,11 +4,21 @@
   (:import-from #:watson/env/built-in-func
                 #:built-in-func-p
                 #:convert-built-in-func)
+  (:import-from #:watson/env/const-func
+                #:i32.const
+                #:i64.const
+                #:f32.const
+                #:f64.const
+                #:const-func-p
+                #:convert-const-func
+                #:convert-type-to-const-func)
   (:import-from #:watson/parser/macro
                 #:macroexpand.wat)
   (:import-from #:watson/env/environment
                 #:wsymbol-var
                 #:wsymbol-global
+                #:wsymbol-function
+                #:wat-function-arg-types
                 #:intern.wat
                 #:clone-wenvironment
                 #:with-cloned-wenvironment
@@ -85,6 +95,8 @@
          (parse-atom form))
         ((special-form-p form)
          (parse-special-form form))
+        ((const-func-form-p form)
+         (parse-const-func-form form))
         ((built-in-func-form-p form)
          (parse-built-in-func-form form))
         ((macro-form-p form)
@@ -130,9 +142,7 @@
 
 (defun parse-1-arg-special-form (head args)
   `(,head ,(parse-form (car args))
-          ,@(mapcar (lambda (unit)
-                      (parse-call-arg unit))
-                    (cdr args))))
+          ,@(parse-call-args (cdr args) nil)))
 
 (defun special-form-p (form)
   (case (car form)
@@ -140,25 +150,51 @@
      t)
     (t nil)))
 
+;; - const functio - ;;
+
+(defun parse-const-func-form (form)
+  (assert (= (length form) 2) nil
+          "const-func form's length should be 2. form: ~A" form)
+  (assert (numberp (cadr form)) nil
+          "const-func should get number. form: ~A" form)
+  `(,(convert-const-func (car form))
+    ,(cadr form)))
+
+(defun const-func-form-p (form)
+  (const-func-p (car form)))
+
 ;; - function call arg - ;;
 
-(defun parse-call-arg (arg)
+(defun parse-call-arg (arg type)
   (if (atom arg)
       (let ((wsymbol (intern.wat arg)))
-        (cond ((wsymbol-var wsymbol)
+        (cond ((numberp arg)
+               (assert type nil "type should be specified for arg: ~A" arg)
+               (parse-form `(,(convert-type-to-const-func type) ,arg)))
+              ((wsymbol-var wsymbol)
                (parse-form `(get-local ,arg)))
               ((wsymbol-global wsymbol)
                (parse-form `(get-global ,arg)))
-              (t "expect local or global variable but ~A is neither" arg)))
+              (t (error "expect local or global variable but ~A is neither" arg))))
       (parse-form arg)))
+
+(defun parse-call-args (args arg-types)
+  (when arg-types
+    (assert (= (length args) (length arg-types)) nil
+            "length of args (~D) and types (~D) should be same"
+            (length args) (length arg-types)))
+  (mapcar (lambda (arg type)
+            (parse-call-arg arg type))
+          args
+          (if arg-types
+              arg-types
+              (loop :for x :from 0 :below (length args) :collect nil))))
 
 ;; - built-in function form - ;;
 
 (defun parse-built-in-func-form (form)
   `(,(convert-built-in-func (car form))
-    ,@(mapcar (lambda (elem)
-                (parse-call-arg elem))
-              (cdr form))))
+    ,@(parse-call-args (cdr form) nil)))
 
 (defun built-in-func-form-p (form)
   (built-in-func-p (car form)))
@@ -167,10 +203,10 @@
 
 (defun parse-function-call-form (form)
   (destructuring-bind (func &rest args) form
-    `(|call| ,(parse-atom func)
-             ,@(mapcar (lambda (arg)
-                         (parse-call-arg arg))
-                       args))))
+    (let* ((wfunc (wsymbol-function (intern.wat (car form))))
+           (arg-types (if wfunc (wat-function-arg-types wfunc) nil)))
+      `(|call| ,(parse-atom func)
+               ,@(parse-call-args args arg-types)))))
 
 (defun function-call-form-p (form)
   (let ((sym (car form)))

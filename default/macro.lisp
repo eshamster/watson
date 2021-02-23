@@ -24,7 +24,6 @@
            #:f64*
            #:f64/)
   (:import-from #:watson/env/built-in-func
-                #:i32.const
                 #:i32.add
                 #:i32.sub
                 #:i32.mul
@@ -43,6 +42,8 @@
                 #:f64.sub
                 #:f64.mul
                 #:f64.div)
+  (:import-from #:watson/env/const-func
+                #:i32.const)
   (:import-from #:watson/definer/macro
                 #:defmacro.wat)
   (:import-from #:watson/env/reserved-word

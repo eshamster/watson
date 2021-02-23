@@ -42,6 +42,7 @@
                "watson/t/definer/import"
                "watson/t/definer/macro"
                "watson/t/env/built-in-func"
+               "watson/t/env/const-func"
                "watson/t/env/environment"
                "watson/t/env/type"
                "watson/t/parser/body-parser"

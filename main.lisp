@@ -1,6 +1,7 @@
 (defpackage :watson/main
   (:nicknames #:watson)
   (:use #:watson/env/built-in-func
+        #:watson/env/const-func
         #:watson/definer/global
         #:watson/definer/macro
         #:watson/definer/function
