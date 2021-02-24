@@ -11,6 +11,8 @@
            #:wat-function-arg-types
            #:make-wat-import
            #:wat-import-arg-types
+           #:make-wat-var
+           #:wat-var-type
 
            #:*global-wat-env*
            #:intern.wat
@@ -52,6 +54,9 @@
 (defstruct wat-import
   generator
   arg-types)
+
+(defstruct wat-var
+  type)
 
 (defun clean-wat-symbol-slots (wsymbol without-warn-slot)
   (macrolet ((clean (slot)
@@ -101,7 +106,9 @@
   (wat-symbol-var wsymbol))
 
 (defsetf wsymbol-var (wsymbol) (var)
-  `(progn (clean-wat-symbol-slots ,wsymbol 'var)
+  `(progn (when ,var
+            (check-type ,var wat-var))
+          (clean-wat-symbol-slots ,wsymbol 'var)
           (setf (wat-symbol-var ,wsymbol) ,var)
           ,wsymbol))
 

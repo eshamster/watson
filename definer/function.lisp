@@ -32,7 +32,7 @@
                   `(|func|
                     ,(parse-var-name name)
                     ,@parsed-typeuse
-                    ,@(parse-body body vars)))
+                    ,@(parse-body body vars types)))
      :arg-types types)))
 
 (defun defun-empty% (name args)

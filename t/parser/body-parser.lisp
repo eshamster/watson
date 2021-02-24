@@ -45,6 +45,8 @@
                 #:i64))
 (in-package :watson/t/parser/body-parser)
 
+(defvar |i32.const| (convert-const-func 'i32.const))
+
 (deftest parse-atom
   (let ((tests `((:name "parse arg"
                   :input (:body a
@@ -68,7 +70,7 @@
             (when init
               (funcall init))
             (testing name
-              (ok (equalp (parse-body body args)
+              (ok (equalp (parse-body body args nil)
                           expect)))))))))
 
 (deftest parse-special-form
@@ -111,11 +113,16 @@
                  (:name "set-local"
                   :input (:body ((local a i32)
                                  (local b i32)
-                                 (set-local a b))
-                          :args ())
+                                 (set-local b 100)
+                                 (set-local a b)
+                                 (set-local c 200))
+                          :args (c)
+                          :arg-types (i32))
                   :expect ((|local| $a |i32|)
                            (|local| $b |i32|)
-                           (|set_local| $a (|get_local| $b))))
+                           (|set_local| $b (,|i32.const| 100))
+                           (|set_local| $a (|get_local| $b))
+                           (|set_local| $c (,|i32.const| 200))))
                  ;; NOTE: The parser doesn't distinguish local and global variable.
                  (:name "get-global"
                   :input (:body (get-global a)
@@ -140,9 +147,9 @@
     (dolist (tt tests)
       (with-cloned-wenvironment
         (destructuring-bind (&key name input expect) tt
-          (destructuring-bind (&key body args) input
+          (destructuring-bind (&key body args arg-types) input
             (testing name
-              (ok (equalp (parse-body body args)
+              (ok (equalp (parse-body body args arg-types)
                           expect)))))))))
 
 (deftest parse-built-in-func-form
@@ -165,7 +172,7 @@
           (destructuring-bind (&key name input expect) tt
             (destructuring-bind (&key body args) input
               (testing name
-                (ok (equalp (parse-body body args)
+                (ok (equalp (parse-body body args nil)
                             expect))))))))))
 
 (deftest parse-macro-form
@@ -188,7 +195,7 @@
               (when init
                 (funcall init))
               (testing name
-                (ok (equalp (parse-body body args)
+                (ok (equalp (parse-body body args nil)
                             expect))))))))))
 
 (deftest parse-function-call-form
@@ -242,5 +249,5 @@
             (when init
               (funcall init))
             (testing name
-              (ok (equalp (parse-body body args)
+              (ok (equalp (parse-body body args nil)
                           expect)))))))))

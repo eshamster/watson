@@ -22,6 +22,8 @@
                 #:wsymbol-import
                 #:wat-function-arg-types
                 #:wat-import-arg-types
+                #:make-wat-var
+                #:wat-var-type
                 #:intern.wat
                 #:clone-wenvironment
                 #:with-cloned-wenvironment
@@ -70,11 +72,19 @@
 
 ;; --- parser --- ;;
 
-(defun parse-body (body args)
+(defun parse-body (body args arg-types)
   (let ((*org-global-wat-env* (clone-wenvironment)))
     (with-cloned-wenvironment
-      (dolist (arg args)
-        (setf (wsymbol-var (intern.wat arg)) t))
+      (if arg-types
+          (progn (assert (= (length args) (length arg-types)) nil
+                         "length of args and arg-types are different")
+                 (mapcar (lambda (arg type)
+                           (setf (wsymbol-var (intern.wat arg))
+                                 (make-wat-var :type type)))
+                         args arg-types))
+          (dolist (arg args)
+            (setf (wsymbol-var (intern.wat arg))
+                  (make-wat-var :type nil))))
       (flatten-progn-all
        (parse-form body)))))
 
@@ -123,25 +133,38 @@
                                (parse-form unit))
                              (cdr form))))
     (local (destructuring-bind (var type) (cdr form)
-             (setf (wsymbol-var (intern.wat var)) t)
+             (setf (wsymbol-var (intern.wat var))
+                   (make-wat-var :type type))
              `(|local| ,(parse-atom var)
                        ,(convert-type type))))
     (block (destructuring-bind (var &rest rest-form) (cdr form)
              (with-cloned-wenvironment
-               (setf (wsymbol-var (intern.wat var)) t)
+               (setf (wsymbol-var (intern.wat var))
+                     (make-wat-var :type nil))
                `(|block| ,(parse-atom var)
                          ,@(parse-form rest-form)))))
     (loop (destructuring-bind (var &rest rest-form) (cdr form)
             (with-cloned-wenvironment
-              (setf (wsymbol-var (intern.wat var)) t)
+              (setf (wsymbol-var (intern.wat var))
+                    (make-wat-var :type nil))
               `(|loop| ,(parse-atom var)
                        ,@(parse-form rest-form)))))
     (get-local (parse-1-arg-special-form '|get_local| (cdr form)))
-    (set-local (parse-1-arg-special-form '|set_local| (cdr form)))
+    (set-local (parse-set-local form))
     (get-global (parse-1-arg-special-form '|get_global| (cdr form)))
     (set-global (parse-1-arg-special-form '|set_global| (cdr form)))
     (br (parse-1-arg-special-form '|br| (cdr form)))
     (br-if (parse-1-arg-special-form '|br_if| (cdr form)))))
+
+(defun parse-set-local (form)
+  (destructuring-bind (set-local var value) form
+    (assert (eq set-local 'set-local))
+    (let ((wvar (wsymbol-var (intern.wat var))))
+      (print wvar)
+      (assert wvar nil
+              "set-local should get var as a first argument")
+      `(|set_local| ,(parse-form var)
+                    ,(parse-call-arg value (wat-var-type wvar))))))
 
 (defun parse-1-arg-special-form (head args)
   `(,head ,(parse-form (car args))

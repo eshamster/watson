@@ -78,16 +78,15 @@
 
 (deftest var
   (with-cloned-wenvironment
-    (let ((hoge1 (intern.wat 'hoge1)))
+    (let ((hoge1 (intern.wat 'hoge1))
+          (wvar1 (make-wat-var)))
       (testing "register and check"
-        (setf (wsymbol-var hoge1)
-              (lambda () 1))
-        (ok (eq (funcall (wsymbol-var hoge1))
-                1)))
-      (let ((hoge2 (intern.wat 'hoge2)))
+        (setf (wsymbol-var hoge1) wvar1)
+        (ok (wsymbol-var hoge1) wvar1))
+      (let ((hoge2 (intern.wat 'hoge2))
+            (wvar2 (make-wat-var)))
         (intern.wat 'hoge3) ; this won't be got
-        (setf (wsymbol-var hoge2)
-              (lambda () 2))
+        (setf (wsymbol-var hoge2) wvar2)
         (testing "wenv-var-symbols"
           (let ((syms (wenv-var-symbols)))
             (ok (= (length syms) 2))
