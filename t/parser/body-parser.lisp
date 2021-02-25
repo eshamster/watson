@@ -18,6 +18,7 @@
                 #:wsymbol-import
                 #:make-wat-function
                 #:make-wat-import
+                #:make-wat-global
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|call|
@@ -129,10 +130,15 @@
                           :args (a))
                   :expect (|get_global| $a))
                  (:name "set-global"
+                  :init ,(lambda ()
+                           (setf (wsymbol-global (intern.wat 'a))
+                                 (make-wat-global :type 'i32))
+                           (setf (wsymbol-global (intern.wat 'c))
+                                 (make-wat-global :type 'i32)))
                   :input (:body ((set-global a b)
                                  (set-global c 100))
-                          :args (a b c)
-                          :arg-types (i32 i32 i32))
+                          :args (b)
+                          :arg-types (i32))
                   :expect ((|set_global| $a (|get_local| $b))
                            (|set_global| $c (,|i32.const| 100))))
                  (:name "br"
@@ -149,7 +155,9 @@
                                    (|br_if| $blk))))))
     (dolist (tt tests)
       (with-cloned-wenvironment
-        (destructuring-bind (&key name input expect) tt
+        (destructuring-bind (&key name input init expect) tt
+          (when init
+            (funcall init))
           (destructuring-bind (&key body args arg-types) input
             (testing name
               (ok (equalp (parse-body body args arg-types)
@@ -221,7 +229,7 @@
                            (setf (wsymbol-function (intern.wat 'hoge))
                                  (make-wat-function))
                            (setf (wsymbol-global (intern.wat 'g))
-                                 (lambda () 2)))
+                                 (make-wat-global)))
                   :input (:body (hoge a g)
                           :args (a))
                   :expect (|call| $hoge (|get_local| $a) (|get_global| $g)))
