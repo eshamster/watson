@@ -13,6 +13,8 @@
            #:wat-import-arg-types
            #:make-wat-var
            #:wat-var-type
+           #:make-wat-global
+           #:wat-global-type
 
            #:*global-wat-env*
            #:intern.wat
@@ -47,6 +49,8 @@
   ;; The following slot is independent from other slots
   export)
 
+;; TODO: Consider to commonize generator
+
 (defstruct wat-function
   generator
   arg-types)
@@ -56,6 +60,10 @@
   arg-types)
 
 (defstruct wat-var
+  type)
+
+(defstruct wat-global
+  generator
   type)
 
 (defun clean-wat-symbol-slots (wsymbol without-warn-slot)
@@ -116,7 +124,9 @@
   (wat-symbol-global wsymbol))
 
 (defsetf wsymbol-global (wsymbol) (global)
-  `(progn (clean-wat-symbol-slots ,wsymbol 'global)
+  `(progn (when ,global
+            (check-type ,global wat-global))
+          (clean-wat-symbol-slots ,wsymbol 'global)
           (setf (wat-symbol-global ,wsymbol) ,global)
           ,wsymbol))
 
@@ -199,7 +209,8 @@
                      (extract-wsymbols-by-accessor wenv #'wat-symbol-import))))
 
 (defun wenv-global-body-generators (package &optional (wenv *global-wat-env*))
-  (mapcar #'wat-symbol-global
+  (mapcar (lambda (wsym)
+            (wat-global-generator (wat-symbol-global wsym)))
           (remove-if (lambda (wsym)
                        (not (eq package (symbol-package (wat-symbol-symbol wsym)))))
                      (extract-wsymbols-by-accessor wenv #'wat-symbol-global))))

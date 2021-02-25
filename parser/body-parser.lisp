@@ -24,6 +24,7 @@
                 #:wat-import-arg-types
                 #:make-wat-var
                 #:wat-var-type
+                #:wat-global-type
                 #:intern.wat
                 #:clone-wenvironment
                 #:with-cloned-wenvironment
@@ -152,7 +153,7 @@
     (get-local (parse-1-arg-special-form '|get_local| (cdr form)))
     (set-local (parse-set-local form))
     (get-global (parse-1-arg-special-form '|get_global| (cdr form)))
-    (set-global (parse-1-arg-special-form '|set_global| (cdr form)))
+    (set-global (parse-set-global form))
     (br (parse-1-arg-special-form '|br| (cdr form)))
     (br-if (parse-1-arg-special-form '|br_if| (cdr form)))))
 
@@ -160,11 +161,19 @@
   (destructuring-bind (set-local var value) form
     (assert (eq set-local 'set-local))
     (let ((wvar (wsymbol-var (intern.wat var))))
-      (print wvar)
       (assert wvar nil
-              "set-local should get var as a first argument")
+              "set-local should get var as a first argument. form: ~A" form)
       `(|set_local| ,(parse-form var)
                     ,(parse-call-arg value (wat-var-type wvar))))))
+
+(defun parse-set-global (form)
+  (destructuring-bind (set-global var value) form
+    (assert (eq set-global 'set-global))
+    (let ((wglobal (wsymbol-global (intern.wat var))))
+      (assert wglobal nil
+              "set-global should get global var as a first argument. form: ~A" form)
+      `(|set_global| ,(parse-form var)
+                     ,(parse-call-arg value (wat-global-type wglobal))))))
 
 (defun parse-1-arg-special-form (head args)
   `(,head ,(parse-form (car args))

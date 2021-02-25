@@ -95,16 +95,15 @@
 
 (deftest global
   (with-cloned-wenvironment
-    (let ((hoge1 (intern.wat 'hoge1)))
+    (let ((hoge1 (intern.wat 'hoge1))
+          (global1 (make-wat-global :generator (lambda () 1))))
       (testing "register and check"
-        (setf (wsymbol-global hoge1)
-              (lambda () 1))
-        (ok (eq (funcall (wsymbol-global hoge1))
-                1)))
-      (let ((hoge2 (intern.wat 'hoge2)))
+        (setf (wsymbol-global hoge1) global1)
+        (ok (eq (wsymbol-global hoge1) global1)))
+      (let ((hoge2 (intern.wat 'hoge2))
+            (global2 (make-wat-global :generator (lambda () 2))))
         (intern.wat 'hoge3) ; this won't be got
-        (setf (wsymbol-global hoge2)
-              (lambda () 2))
+        (setf (wsymbol-global hoge2) global2)
         (testing "wenv-global-symbols"
           (let ((syms (wenv-global-symbols)))
             (ok (= (length syms) 2))

@@ -3,6 +3,7 @@
   (:export #:defglobal.wat)
   (:import-from #:watson/env/environment
                 #:wsymbol-global
+                #:make-wat-global
                 #:intern.wat)
   (:import-from #:watson/env/reserved-word
                 #:|global|
@@ -21,18 +22,24 @@
   ;; Ex. (defglobal.wat g js.global (mut i32))
   ;;     -> (global $g (import "js" "global") (mut i32))
   `(progn (setf (wsymbol-global (intern.wat ',name))
-                (lambda ()
-                  (generate-global-body
-                   ',name ',mod-nm ',globaltype)))))
+                (generate-global-body
+                 ',name ',mod-nm ',globaltype))))
 
 (defun generate-global-body (name mod-nm globaltype)
-  `(|global|
-    ,(parse-var-name name)
-    (|import| ,@(parse-mod-nm mod-nm))
-    ,(parse-globaltype globaltype)))
+  (multiple-value-bind (parsed-globaltype type)
+      (parse-globaltype globaltype)
+    (make-wat-global
+     :generator (lambda ()
+                  `(|global|
+                    ,(parse-var-name name)
+                    (|import| ,@(parse-mod-nm mod-nm))
+                    ,parsed-globaltype))
+     :type type)))
 
 (defun parse-globaltype (globaltype)
   (cond ((and (listp globaltype)
               (eq (car globaltype) 'mut))
-         `(|mut| ,(convert-type (cadr globaltype))))
+         (let ((type (cadr globaltype)))
+           (values `(|mut| ,(convert-type type))
+                   type)))
         (t (error "not implemented globaltype form: ~A" globaltype))))

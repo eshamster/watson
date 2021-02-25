@@ -129,9 +129,12 @@
                           :args (a))
                   :expect (|get_global| $a))
                  (:name "set-global"
-                  :input (:body (set-global a b)
-                          :args (a b))
-                  :expect (|set_global| $a (|get_local| $b)))
+                  :input (:body ((set-global a b)
+                                 (set-global c 100))
+                          :args (a b c)
+                          :arg-types (i32 i32 i32))
+                  :expect ((|set_global| $a (|get_local| $b))
+                           (|set_global| $c (,|i32.const| 100))))
                  (:name "br"
                   :input (:body (block blk
                                   (br blk))
