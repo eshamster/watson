@@ -82,7 +82,7 @@
           (wvar1 (make-wat-var)))
       (testing "register and check"
         (setf (wsymbol-var hoge1) wvar1)
-        (ok (wsymbol-var hoge1) wvar1))
+        (ok (eq (wsymbol-var hoge1) wvar1)))
       (let ((hoge2 (intern.wat 'hoge2))
             (wvar2 (make-wat-var)))
         (intern.wat 'hoge3) ; this won't be got
