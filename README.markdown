@@ -19,19 +19,18 @@ watson: WAT (WebAssembly Text format) Structured ON Lisp
 (defimport.wat log console.log (func ((i32))))
 
 (defun.wat main () ()
-  (let (((x i32) (i32.const 5)))
+  (let (((x i32) 5))
     (log (factorial x))))
 
 (defun.wat factorial ((x i32)) (i32)
   (let ((result i32))
-    (if (i32.ge-u (i32.const 1) x)
-        (set-local result (i32.const 1))
-        (progn (i32.mul x
-                        (factorial (i32.sub x (i32.const 1))))
-               (set-local result)))
+    (if (i32.ge-u 1 x)
+        (set-local result 1)
+        (set-local result (i32.mul x (factorial (i32.sub x 1)))))
     (get-local result)))
 
 (defexport.wat exported-func (func main))
+
 
 (let ((*print-pretty* t))
   (princ (generate-wat-module *package*)))
@@ -88,20 +87,18 @@ You can define and use macros.
 
 (defimport.wat log console.log (func ((i32))))
 
-(defmacro.wat incf-i32 (place &optional (added '(i32.const 1)))
+(defmacro.wat incf-i32 (place &optional (added 1))
   `(set-local ,place (i32.add ,place ,added)))
 
 (defun.wat main () ()
-  (let (((x i32) (i32.const 5)))
+  (let (((x i32) 5))
     (incf-i32 x)
     (log x)))
 
 (defexport.wat exported-func (func main))
 
-(defun main (&rest argv)
-  (declare (ignorable argv))
-  (let ((*print-pretty* t))
-    (princ (generate-wat-module *package*))))
+(let ((*print-pretty* t))
+  (princ (generate-wat-module *package*)))
 ```
 
 The result is the following (formatted by hand).
